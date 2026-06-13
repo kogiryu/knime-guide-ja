@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KNIME攻略ガイド</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ====== Slate Minimal（唯一の基本デザイン） ====== */
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --primary: #475569;
+    --primary-light: #f1f5f9;
+    --secondary: #64748b;
+    --secondary-light: #f1f5f9;
+    --accent: #0f172a;
+    --accent-light: #e2e8f0;
+    --warn: #b45309;
+    --warn-light: #fffbeb;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --radius: 6px;
+    --shadow: none;
+  }
+
+  body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Layout */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar { width: 240px; min-width: 240px; background: var(--surface); border-right: 1px solid var(--border); padding: 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .main { flex: 1; padding: 2rem; overflow-y: auto; }
+  .sidebar-logo { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid var(--border); }
+  .sidebar-logo h1 { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+  .sidebar-logo p { font-size: .75rem; color: var(--text-muted); margin-top: 2px; }
+  .sidebar-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
+  .sidebar-footer p { font-size: .68rem; line-height: 1.55; color: var(--text-muted); }
+  .nav-section { padding: .75rem 1rem .25rem; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+  .nav-item { display: flex; align-items: center; gap: .5rem; padding: .5rem 1.25rem; cursor: pointer; font-size: .875rem; color: var(--text); border-left: 3px solid transparent; transition: all .15s; }
+  .nav-item:hover { background: var(--bg); }
+  .nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+  .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  /* Page header */
+  .page-header { margin-bottom: 2rem; }
+  .page-header h2 { font-size: 1.6rem; font-weight: 700; }
+  .page-header p { color: var(--text-muted); margin-top: .25rem; }
+
+  /* Search */
+  .search-box { position: relative; margin-bottom: 1.5rem; }
+  .search-box input { width: 100%; padding: .6rem 1rem .6rem 2.5rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: .95rem; background: var(--surface); outline: none; transition: border .15s; }
+  .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(71,85,105,.15); }
+  .search-icon { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; }
+
+  /* Cards */
+  .card { background: var(--surface); border-radius: var(--radius); border: 2px solid var(--border); padding: 1.25rem; box-shadow: var(--shadow); }
+  .card + .card { margin-top: 1rem; }
+  .card-header { display: flex; align-items: flex-start; gap: .75rem; margin-bottom: .75rem; }
+  .card-badge { display: inline-flex; align-items: center; padding: .2rem .6rem; border-radius: 99px; font-size: .7rem; font-weight: 600; white-space: nowrap; }
+  .badge-io { background: var(--primary-light); color: var(--primary); }
+  .badge-manip { background: var(--secondary-light); color: var(--secondary); }
+  .badge-filter { background: var(--accent-light); color: var(--accent); }
+  .badge-join { background: var(--warn-light); color: var(--warn); }
+  .badge-agg { background: #fce7f3; color: #be185d; }
+  .badge-ml { background: #f0fdf4; color: var(--success); }
+  .badge-loop { background: #fff7ed; color: #c2410c; }
+  .badge-viz  { background: #f0f9ff; color: #0369a1; }
+  .badge-flow { background: #fdf4ff; color: #7e22ce; }
+  .card-title { font-size: 1rem; font-weight: 600; }
+  .card-subtitle { font-size: .8rem; color: var(--text-muted); margin-top: .1rem; }
+  .card-body { font-size: .875rem; color: var(--text); }
+  .card-body p { margin-bottom: .5rem; }
+  .card-body p:last-child { margin-bottom: 0; }
+
+  /* Expand/collapse */
+  .expandable { cursor: pointer; user-select: none; }
+  .expand-content { display: none; margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
+  .expand-content.open { display: block; }
+  .expand-toggle { margin-left: auto; font-size: .75rem; color: var(--primary); }
+
+  /* Port diagram */
+  .port-row { display: flex; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
+  .port-tag { font-size: .75rem; padding: .15rem .5rem; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); }
+  .port-in { border-color: #86efac; background: #f0fdf4; color: #166534; }
+  .port-out { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; }
+
+  /* Steps */
+  .steps { list-style: none; counter-reset: steps; }
+  .steps li { counter-increment: steps; display: flex; gap: .75rem; margin-bottom: .75rem; font-size: .875rem; }
+  .steps li::before { content: counter(steps); min-width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: #fff; font-size: .75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  /* Code */
+  code { font-family: 'Consolas', 'Courier New', monospace; font-size: .8rem; background: var(--bg); padding: .1rem .35rem; border-radius: 4px; border: 1px solid var(--border); }
+
+  /* Node icon box */
+  .node-icon-box { width: 44px; height: 44px; min-width: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .node-icon-box svg { width: 26px; height: 26px; }
+  .icon-io   { background: #dbeafe; }
+  .icon-manip { background: #ccfbf1; }
+  .icon-filter { background: #ede9fe; }
+  .icon-join { background: #fef3c7; }
+  .icon-agg  { background: #fce7f3; }
+  .icon-ml   { background: #dcfce7; }
+  .icon-loop { background: #fff7ed; }
+  .icon-viz  { background: #f0f9ff; }
+  .icon-flow { background: #fdf4ff; }
+
+  /* Category section header (「すべて」表示時の種類見出し) */
+  .cat-section-header { display: flex; align-items: center; gap: .55rem; margin: 1.75rem 0 .6rem; padding-bottom: .45rem; border-bottom: 2px solid var(--border); }
+  .cat-section-header:first-child { margin-top: .25rem; }
+  .cat-section-icon { width: 30px; height: 30px; min-width: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .cat-section-icon svg { width: 19px; height: 19px; }
+  .cat-section-title { font-size: 1.02rem; font-weight: 700; color: var(--text); }
+  .cat-section-count { font-size: .72rem; font-weight: 700; color: var(--text-muted); background: var(--primary-light); padding: .12rem .55rem; border-radius: 99px; }
+
+  /* Flow node with icon */
+  .flow-node { display: inline-flex; align-items: center; gap: .3rem; padding: .25rem .6rem; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); font-weight: 500; }
+  .flow-node svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* Error troubleshooter */
+  .error-search { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .error-search h3 { font-size: 1rem; font-weight: 600; margin-bottom: .75rem; }
+  .error-search textarea { width: 100%; padding: .6rem .875rem; border: 1px solid var(--border); border-radius: 8px; font-size: .875rem; resize: vertical; min-height: 80px; outline: none; font-family: inherit; }
+  .error-search textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(71,85,105,.15); }
+  .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1.1rem; border-radius: 8px; font-size: .875rem; font-weight: 600; border: none; cursor: pointer; transition: all .15s; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { background: var(--bg); }
+  .error-result { background: var(--danger-light); border: 1px solid #fca5a5; border-radius: var(--radius); padding: 1.25rem; margin-top: 1rem; }
+  .error-result h4 { color: var(--danger); font-size: .95rem; margin-bottom: .5rem; }
+  .error-result.success { background: var(--success-light); border-color: #86efac; }
+  .error-result.success h4 { color: var(--success); }
+
+  /* Filter chips */
+  .filter-chips { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .chip { padding: .3rem .8rem; border-radius: 99px; font-size: .8rem; font-weight: 500; border: 1px solid var(--border); cursor: pointer; transition: all .15s; background: var(--surface); color: var(--text-muted); }
+  .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .chip:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+
+  /* Template cards */
+  .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .template-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+  .template-card h3 { font-size: .95rem; font-weight: 600; margin-bottom: .4rem; }
+  .template-card p { font-size: .8rem; color: var(--text-muted); margin-bottom: .75rem; }
+  .flow-diagram { background: var(--bg); border-radius: 8px; padding: .75rem; margin: .75rem 0; font-size: .78rem; overflow-x: auto; white-space: nowrap; }
+  .flow-arrow { display: inline-block; margin: 0 .25rem; color: var(--text-muted); }
+  .flow-node.loop { background: var(--warn-light); border-color: #fbbf24; color: #92400e; }
+  .flow-node.io { background: var(--primary-light); border-color: #93c5fd; color: #1e40af; }
+  .flow-node.proc { background: var(--secondary-light); border-color: #5eead4; color: #134e4a; }
+  .flow-node.end { background: #f3e8ff; border-color: #c084fc; color: #6b21a8; }
+
+  /* Dashboard */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem 1.25rem; }
+  .stat-card .num { font-size: 1.75rem; font-weight: 700; }
+  .stat-card .lbl { font-size: .75rem; color: var(--text-muted); margin-top: .1rem; }
+  .stat-card.blue .num { color: var(--primary); }
+  .stat-card.green .num { color: var(--success); }
+  .stat-card.purple .num { color: var(--accent); }
+  .stat-card.orange .num { color: var(--warn); }
+
+  /* Quick start */
+  .quick-start { background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%); border-radius: var(--radius); padding: 1.5rem; color: #fff; margin-bottom: 1.5rem; }
+  .quick-start h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+  .quick-start p { font-size: .875rem; opacity: .85; margin-bottom: 1rem; }
+  .quick-links { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .quick-link { padding: .35rem .85rem; background: rgba(255,255,255,.15); border-radius: 99px; font-size: .8rem; font-weight: 600; color: #fff; cursor: pointer; transition: background .15s; border: 1px solid rgba(255,255,255,.25); }
+  .quick-link:hover { background: rgba(255,255,255,.25); }
+
+  /* Hidden pages */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid var(--border); }
+    .app { flex-direction: column; }
+    .main { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>⚙ KNIME攻略</h1>
+    <p>日本語ガイド</p>
+  </div>
+  <div class="nav-section">メニュー</div>
+  <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon">🏠</span>ホーム</div>
+  <div class="nav-item" onclick="showPage('nodes')"><span class="nav-icon">🔷</span>ノード辞典</div>
+  <div class="nav-item" onclick="showPage('loops')"><span class="nav-icon">🔄</span>ループ解説</div>
+  <div class="nav-item" onclick="showPage('templates')"><span class="nav-icon">📋</span>テンプレート集</div>
+  <div class="nav-item" onclick="showPage('errors')"><span class="nav-icon">🚨</span>エラー解決</div>
+  <div class="sidebar-footer">
+    <p>本サイトは非公式の学習用資料です。KNIME® は KNIME AG の商標であり、本サイトは同社とは一切関係ありません。</p>
+  </div>
+</aside>
+
+<!-- Main content -->
+<main class="main">
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="page-header">
+      <h2>KNIME攻略ガイドへようこそ</h2>
+      <p>ノード解説・ループ・テンプレート・エラー解決を日本語でまとめました</p>
+    </div>
+    <div class="quick-start">
+      <h3>🚀 どこから始めますか？</h3>
+      <p>目的に合わせてすぐにジャンプできます</p>
+      <div class="quick-links">
+        <span class="quick-link" onclick="showPage('nodes')">ノードを調べる</span>
+        <span class="quick-link" onclick="showPage('loops')">ループを覚える</span>
+        <span class="quick-link" onclick="showPage('templates')">テンプレートを使う</span>
+        <span class="quick-link" onclick="showPage('errors')">エラーを解決する</span>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card blue"><div class="num">100</div><div class="lbl">ノード解説</div></div>
+      <div class="stat-card green"><div class="num">5</div><div class="lbl">ループパターン</div></div>
+      <div class="stat-card purple"><div class="num">8</div><div class="lbl">テンプレート</div></div>
+      <div class="stat-card orange"><div class="num">8</div><div class="lbl">エラー対処法</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">📖 KNIMEとは？</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>KNIME（ナイム）はドイツ発のオープンソースデータ分析プラットフォームです。コードを書かずにノードをつなぐだけで、データ読み込み・加工・分析・可視化・機械学習まで一貫して行えます。</p>
+        <p>ワークフローは<strong>ノード</strong>と呼ばれる処理ブロックを矢印でつないで作ります。各ノードは特定の処理（CSVの読み込み、フィルタリングなど）を担当し、上流の結果を受け取り、下流に渡します。</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-title" style="margin-bottom:.75rem;">🗺️ 基本的なワークフローの流れ</div>
+      <div class="flow-diagram" id="home-flow"></div>
+      <p style="font-size:.8rem; color:var(--text-muted); margin-top:.5rem;">データ読込 → 絞り込み → 加工 → 出力　の流れが基本です</p>
+    </div>
+    <p style="font-size:.72rem; color:var(--text-muted); margin-top:1.5rem; line-height:1.6;">
+      ※ 本サイトは非公式の学習用資料です。KNIME® は KNIME AG の商標であり、本サイトは同社とは一切関係ありません。
+      掲載内容は正確性を期していますが、最新の公式情報は <a href="https://www.knime.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">KNIME公式サイト</a> をご確認ください。
+    </p>
+  </div>
+
+  <!-- NODES -->
+  <div class="page" id="page-nodes">
+    <div class="page-header">
+      <h2>🔷 ノード辞典</h2>
+      <p>よく使うノードを日本語で解説しています。クリックで詳細を表示します。</p>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="node-search" placeholder="ノード名や機能で検索…" oninput="filterNodes()">
+    </div>
+    <div class="filter-chips" id="node-chips">
+      <span class="chip active" data-cat="all" onclick="setCat('all',this)">すべて</span>
+      <span class="chip" data-cat="io" onclick="setCat('io',this)">入出力</span>
+      <span class="chip" data-cat="manip" onclick="setCat('manip',this)">データ加工</span>
+      <span class="chip" data-cat="filter" onclick="setCat('filter',this)">フィルタ</span>
+      <span class="chip" data-cat="join" onclick="setCat('join',this)">結合</span>
+      <span class="chip" data-cat="agg" onclick="setCat('agg',this)">集計</span>
+      <span class="chip" data-cat="ml" onclick="setCat('ml',this)">機械学習</span>
+      <span class="chip" data-cat="loop" onclick="setCat('loop',this)">ループ</span>
+      <span class="chip" data-cat="viz" onclick="setCat('viz',this)">可視化</span>
+      <span class="chip" data-cat="flow" onclick="setCat('flow',this)">フロー制御</span>
+    </div>
+    <div id="node-list"></div>
+  </div>
+
+  <!-- LOOPS -->
+  <div class="page" id="page-loops">
+    <div class="page-header">
+      <h2>🔄 ループ解説</h2>
+      <p>KNIMEのループ処理を図解で丁寧に説明します</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:.5rem;">ループとは？</div>
+      <div class="card-body">
+        <p>KNIMEのループは「同じ処理を複数回繰り返す」仕組みです。ループの入口（<strong>Loop Start</strong>）と出口（<strong>Loop End</strong>）の間にある処理が繰り返し実行されます。</p>
+        <div class="flow-diagram" id="loop-intro-flow"></div>
+      </div>
+    </div>
+
+    <div id="loop-cards"></div>
+  </div>
+
+  <!-- TEMPLATES -->
+  <div class="page" id="page-templates">
+    <div class="page-header">
+      <h2>📋 テンプレート集</h2>
+      <p>よくある処理のフローをテンプレートとして用意しました。参考にワークフローを組んでください。</p>
+    </div>
+    <div class="template-grid" id="template-grid"></div>
+  </div>
+
+  <!-- ERRORS -->
+  <div class="page" id="page-errors">
+    <div class="page-header">
+      <h2>🚨 エラー解決ガイド</h2>
+      <p>エラーメッセージを入力すると解決策を提案します</p>
+    </div>
+    <div class="error-search">
+      <h3>エラーメッセージを入力してください</h3>
+      <textarea id="error-input" placeholder="例: Execute failed: Input table's spec does not match…&#10;例: ERROR Column 'xxx' is not contained in the table&#10;例: java.lang.OutOfMemoryError"></textarea>
+      <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="diagnoseError()">🔍 解決策を調べる</button>
+        <button class="btn btn-ghost" onclick="clearError()">クリア</button>
+      </div>
+      <div id="error-result"></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:.75rem;">よくあるエラー一覧</div>
+      <div id="common-errors"></div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// ==================== DATA ====================
+
+const NODES = [
+  // I/O
+  { id:'csv-reader', name:'CSV Reader', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'CSVファイルを読み込んでテーブルを作成します。最もよく使う入力ノードのひとつです。',
+    ports:{ in:[], out:['データテーブル'] },
+    detail:'ファイルパス・区切り文字・ヘッダ行・文字コードを設定します。「Has Column Header」でヘッダ行の有無、「Has Row ID」で行ID列の有無を制御します。',
+    config:[
+      {f:'File/URL', d:'読み込むCSVファイルのパスまたはURL。「Browse…」ボタンでファイル選択できる。'},
+      {f:'Column delimiter', d:'区切り文字。カンマ「,」、タブ「\\t」、セミコロン「;」など。「Other」で任意文字も指定可。'},
+      {f:'Row delimiter', d:'改行コード。通常は「System default」のままでOK。'},
+      {f:'Quote char', d:'文字列を囲む引用符。通常は「"」（ダブルクォート）。'},
+      {f:'Has Column Header', d:'1行目を列名として扱う場合はON（通常ON）。'},
+      {f:'Has Row ID', d:'最初の列を行IDとして使う場合はON。通常はOFF。'},
+      {f:'Encoding', d:'文字コード。日本語データは「UTF-8」または「Shift_JIS（windows-31j）」を指定。'},
+      {f:'Limit rows', d:'先頭N行だけ読み込む制限。動作確認時に便利。本番はOFF。'},
+    ],
+    example:{
+      title:'売上データを読み込む場合',
+      code:`File: C:/data/sales_2024.csv\nColumn delimiter: , （カンマ）\nHas Column Header: ✅ ON\nEncoding: UTF-8\nLimit rows: 100（確認時のみ）`,
+      note:'Excelで保存したCSVが文字化けする場合はEncoding を「windows-31j」にしてみてください。'
+    },
+    tips:['文字化けする場合は「Encoding」をUTF-8またはShift_JISに設定','大きなファイルは「Limit rows」で先頭N行だけ読み込んで確認できる','「Autodetect format」ボタンで設定を自動検出できる'] },
+
+  { id:'csv-writer', name:'CSV Writer', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'テーブルをCSVファイルに書き出します。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'書き込み先パスと区切り文字、ヘッダ行の書き出し有無を設定します。',
+    config:[
+      {f:'File/URL', d:'出力先ファイルパス。存在しない場合は新規作成される。'},
+      {f:'Column delimiter', d:'出力する区切り文字。カンマ「,」が一般的。'},
+      {f:'Write column header', d:'列名を1行目に書き出す場合はON（通常ON）。'},
+      {f:'If file exists', d:'同名ファイルが既にある場合の動作。「Overwrite」で上書き、「Append」で追記、「Abort」でエラー停止。'},
+    ],
+    example:{
+      title:'加工済みデータを出力する場合',
+      code:`File: C:/output/result.csv\nColumn delimiter: ,\nWrite column header: ✅ ON\nIf file exists: Overwrite`,
+      note:'ループ内で使う場合は「Append」にすると各ループ結果を1ファイルに追記できます。'
+    },
+    tips:['「Overwrite existing file」で上書き可否を制御','「Append to existing file」で追記モードに切り替え可'] },
+
+  { id:'excel-reader', name:'Excel Reader', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'Excelファイル（.xlsx / .xls）を読み込みます。シートの指定も可能。',
+    ports:{ in:[], out:['データテーブル'] },
+    detail:'「Sheet name」で読み込むシートを指定します。複数シートを読む場合はLoop Start / Loop Endと組み合わせます。',
+    config:[
+      {f:'File/URL', d:'読み込むExcelファイルのパス。'},
+      {f:'Sheet selection', d:'「Sheet name」で名前指定、「First sheet」で先頭シートを読む。'},
+      {f:'Sheet name', d:'読み込むシート名を直接入力（例: Sheet1、売上データ）。'},
+      {f:'Has Column Header', d:'先頭行を列名として扱う場合はON。'},
+      {f:'Skip first N rows', d:'ヘッダより前の不要な行をスキップする行数。タイトル行がある場合に使う。'},
+      {f:'Limit rows', d:'先頭N行だけ読み込む制限。'},
+    ],
+    example:{
+      title:'「売上」シートを読み込む場合',
+      code:`File: C:/data/report.xlsx\nSheet selection: Sheet name\nSheet name: 売上\nHas Column Header: ✅ ON\nSkip first N rows: 2（タイトル行が2行ある場合）`,
+      note:'シート名が毎回変わる場合は「First sheet」を選択するか、ループとTable Row To Variableで動的に切り替えます。'
+    },
+    tips:['シート名が変わる場合は「First sheet」を選択','ヘッダ行が複数行ある場合は「Skip rows」で調整'] },
+
+  { id:'excel-writer', name:'Excel Writer (XLS)', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'テーブルをExcelファイルに書き出します。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'シート名・ファイルパスを設定します。',
+    config:[
+      {f:'File/URL', d:'出力先Excelファイルのパス（.xlsxを推奨）。'},
+      {f:'Sheet name', d:'書き込むシート名（例: result、集計）。'},
+      {f:'If file/sheet exists', d:'上書き方法。「Overwrite sheet」でシートのみ上書き、「Abort」でエラー。'},
+      {f:'Write row key', d:'RowIDを最初の列として書き出す場合ON。通常はOFF。'},
+    ],
+    example:{
+      title:'集計結果をExcelに出力する場合',
+      code:`File: C:/output/集計結果.xlsx\nSheet name: 月次集計\nIf file/sheet exists: Overwrite sheet\nWrite row key: ☐ OFF`,
+      note:'行数が65,536を超えるデータは Excel Writer (XLS) ではなく Excel Writer (XLSX) ノードを使ってください。'
+    },
+    tips:['行数が65,536を超える場合はXLSX形式のノードを使う'] },
+
+  { id:'db-reader', name:'DB Reader', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'SQLクエリを実行してデータベースから結果を取得します。',
+    ports:{ in:['DB接続'], out:['データテーブル'] },
+    detail:'SQL文を直接入力します。フロー変数を使うと動的なクエリを組み立てられます。',
+    config:[
+      {f:'SQL Statement', d:'実行するSELECT文を直接入力。フロー変数は $${S変数名}$$ の形式で埋め込み可能。'},
+      {f:'(Flow Variable埋め込み)', d:'例: WHERE date = \'$${Sdate}$$\' のように書くと変数の値がSQLに挿入される。'},
+    ],
+    example:{
+      title:'日付でフィルタしてデータ取得する場合',
+      code:`SELECT * FROM sales\nWHERE shop_cd = '$\${Sshop_cd}$$'\n  AND sale_date = '$\${Sdate}$$'\nORDER BY sale_date`,
+      note:'フロー変数を使う場合、変数名は接頭辞付き（文字列はS、数値はI/D）で参照します。'
+    },
+    tips:['WHERE句にフロー変数を埋め込む場合は $${Svar_name}$$ の書式'] },
+
+  { id:'table-creator', name:'Table Creator', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'ノード設定画面で手動でテーブルを作成します。テスト用の小さなデータ作成に便利。',
+    ports:{ in:[], out:['データテーブル'] },
+    detail:'設定画面上でセルを直接編集してテーブルを作ります。',
+    config:[
+      {f:'表のセル直接編集', d:'列名はヘッダ行をダブルクリックして変更。セルをクリックして値を入力。'},
+      {f:'列の追加', d:'「+」ボタンで列を追加。型（String / Int / Double / Boolean）を選択可。'},
+      {f:'行の追加', d:'「+」ボタンで行を追加。'},
+    ],
+    example:{
+      title:'パラメータリストテーブルを作る場合',
+      code:`列1: shop_cd (String)  列2: region (String)\n─────────────────────────\n  A001              東京\n  A002              大阪\n  A003              名古屋`,
+      note:'ループと組み合わせて「複数店舗を順番に処理する」といった用途に最適です。'
+    },
+    tips:['テストや定数テーブルの作成に活用'] },
+
+  // Data Manipulation
+  { id:'string-manipulation', name:'String Manipulation', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'文字列に対する加工（置換・結合・切り出しなど）を行い、新しい列を追加または既存列を置換します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'式ベースでの操作。例: <code>join($col1$, " ", $col2$)</code> で2列を結合。<code>regexReplace($col$, "pattern", "replace")</code> で正規表現置換。',
+    config:[
+      {f:'Expression', d:'加工式を入力するエリア。列参照は $列名$ の形式。関数はダブルクリックで挿入できる。'},
+      {f:'New column name', d:'結果を追加する新列の名前。'},
+      {f:'Replace column', d:'ONにすると新列を追加せず元の列を上書き置換する。'},
+    ],
+    example:{
+      title:'姓列と名列を結合して氏名列を作る場合',
+      code:`Expression: join($姓$, " ", $名$)\nNew column name: 氏名\nReplace column: ☐ OFF（新列として追加）\n\n▼ よく使う関数一覧\ntrim($col$)              → 前後の空白除去\nlowerCase($col$)         → 小文字に変換\nsubstr($col$, 0, 4)      → 先頭4文字を切り出し\nregexReplace($col$, "\\\\s+", "") → 空白を全削除`,
+      note:'$列名$ の列名はスペースを含む場合も正確に入力してください。補完機能（Ctrl+Space）が使えます。'
+    },
+    tips:['upperCase() / lowerCase() で大文字小文字変換','trim() で前後の空白除去','substr($col$, 0, 3) で先頭3文字を取得'] },
+
+  { id:'column-rename', name:'Column Rename', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'列名を変更します。複数列を一括でリネームできます。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'「Column» Rename」でドロップダウンから列を選択して新しい名前を入力します。',
+    config:[
+      {f:'列リスト（左側）', d:'入力テーブルの全列が表示される。変更したい列を選択して右側に設定を追加。'},
+      {f:'New name（右側）', d:'変更後の列名を入力。'},
+      {f:'Replace (Regex)', d:'正規表現パターンで列名を一括置換。「Search pattern」と「Replacement」を設定。'},
+    ],
+    example:{
+      title:'英語列名を日本語に変更する場合',
+      code:`変更前 → 変更後\ncustomer_id  →  顧客ID\nsale_date    →  売上日\namount       →  金額\n\n▼ 一括変換（Regex）の例\nSearch pattern:  ^sale_    （sale_ で始まる列）\nReplacement:     売上_`,
+      note:'正規表換は「Replace (Regex)」タブで行います。プレビューで結果を確認してから適用してください。'
+    },
+    tips:['正規表現でパターン一括リネームも可能（Replace (Regex)）'] },
+
+  { id:'column-filter', name:'Column Filter', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'不要な列を除外、または必要な列だけを残します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'「Include」側に残したい列、「Exclude」側に削除する列を配置します。',
+    config:[
+      {f:'Include（左パネル）', d:'出力に残す列の一覧。ここにある列だけが下流に渡される。'},
+      {f:'Exclude（右パネル）', d:'削除する列の一覧。矢印ボタンやドラッグで移動。'},
+      {f:'Enforce Inclusion', d:'ONにすると、後から上流で列が追加された場合でも自動的にExcludeに入る（誤って余分な列が通るのを防ぐ）。'},
+      {f:'Filter by name（検索）', d:'列名で絞り込み検索が可能。列数が多い場合に便利。'},
+    ],
+    example:{
+      title:'ID・日付・金額の3列だけを残す場合',
+      code:`Include に移動:\n  customer_id\n  sale_date\n  amount\n\nExclude（削除）:\n  その他の全列\n\nEnforce Inclusion: ✅ ON（推奨）`,
+      note:'列を選んで「>>」ボタンを押すとExcludeに移動します。「<< すべて」で全列をIncludeに戻せます。'
+    },
+    tips:['「Enforce Inclusion」をオンにすると、後から列が追加されても自動除外される'] },
+
+  { id:'math-formula', name:'Math Formula', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'数値計算の新しい列を追加します。四則演算・三角関数・条件式などに対応。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'式例: <code>$price$ * $quantity$</code>　条件式: <code>if($val$ > 0, $val$, 0)</code>',
+    config:[
+      {f:'Expression', d:'計算式を入力。列は $列名$ で参照。定数や関数も使用可。'},
+      {f:'New column name', d:'計算結果を入れる新しい列名。'},
+      {f:'Replace column', d:'ONにすると既存列を上書き。数値の丸め処理などに使う。'},
+      {f:'Column type', d:'出力列の型。「Auto」でほぼ自動判定されるが、Integer/Doubleを明示することも可。'},
+    ],
+    example:{
+      title:'単価×数量で売上金額を計算する場合',
+      code:`Expression: $単価$ * $数量$\nNew column name: 売上金額\nReplace column: ☐ OFF\n\n▼ 他の式の例\n$税抜$ * 1.1                     → 税込金額（10%）\nif($売上$ >= 10000, "A", "B")    → 条件分岐（文字はString Manip推奨）\nround($金額$ / 1000, 0) * 1000   → 千円未満切り捨て\nabs($差異$)                      → 絶対値`,
+      note:'条件分岐で文字列を返したい場合はString Manipulation の if() を使うほうが型エラーを避けられます。'
+    },
+    tips:['NaN対策: isNaN($col$) で欠損値チェック','floor() / ceil() / round() で丸め処理'] },
+
+  { id:'cell-replacer', name:'Cell Replacer', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'別テーブルのルールに基づいて値を置き換えます（コード変換テーブルとの結合に便利）。',
+    ports:{ in:['データテーブル','変換テーブル'], out:['データテーブル'] },
+    detail:'変換テーブルの1列目が「検索値」、2列目が「置換値」になります。',
+    config:[
+      {f:'Target column（ポート1）', d:'置き換えたい列名。この列の値が変換テーブルで検索される。'},
+      {f:'Search column（ポート2）', d:'変換テーブルの「検索値」列名（1列目）。'},
+      {f:'Replace column（ポート2）', d:'変換テーブルの「置換値」列名（2列目）。'},
+      {f:'If no match', d:'マッチしない値の扱い。「Keep original value」で元の値を維持、「Replace with missing」で欠損値にする。'},
+    ],
+    example:{
+      title:'都道府県コードを都道府県名に変換する場合',
+      code:`[変換テーブル（ポート2）]\n  code  name\n  13    東京都\n  27    大阪府\n  23    愛知県\n\n設定:\n  Target column: pref_code\n  Search column: code\n  Replace column: name\n  If no match: Keep original value`,
+      note:'変換テーブルはTable Creatorで手作りするか、CSVから読み込んで接続します。'
+    },
+    tips:['コード→名称変換などに活用','マッチしなかった行の扱い（「Retain original value」）を設定できる'] },
+
+  { id:'number-to-string', name:'Number To String', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'数値列を文字列型に変換します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'型変換が必要な場合（文字列連結前など）に使います。',
+    config:[
+      {f:'Include（変換対象）', d:'文字列型に変換したい数値列をIncludeに移動する。'},
+      {f:'Decimal separator', d:'小数点文字。通常は「.」（ドット）。'},
+    ],
+    example:{
+      title:'IDコードを文字列に変換してから結合する場合',
+      code:`Include に移動: customer_id（Integer型）\n\n変換後:\n  customer_id: 12345（Integer）\n  → "12345"（String）に変換\n\n→ 続けてString Manipulationで\n  join("ID-", $customer_id$) のように文字列処理が可能`,
+      note:'逆変換（文字列→数値）は「String To Number」ノードを使います。'
+    },
+    tips:['逆はString To Numberノードを使用'] },
+
+  { id:'missing-value', name:'Missing Value', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'欠損値（Missing Value）を指定した値や統計値（平均・最頻値など）で補完します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'列ごとに補完方法（固定値/平均/中央値/最頻値/削除）を設定できます。',
+    config:[
+      {f:'Default（上部タブ）', d:'全列に共通して適用するデフォルトの補完方法。「Do Nothing」にしておき列ごとに設定するのが安全。'},
+      {f:'Column Settings（下部）', d:'特定の列を選んで補完方法を個別設定する。Add → 列を選択 → 方法を指定。'},
+      {f:'補完方法（数値列）', d:'Mean（平均）/ Median（中央値）/ Fixed Value（固定値入力）/ Remove Row（行削除）'},
+      {f:'補完方法（文字列列）', d:'Most Frequent（最頻値）/ Fixed Value（固定文字列入力）/ Remove Row'},
+    ],
+    example:{
+      title:'数値は平均値補完・文字列は「不明」で補完する場合',
+      code:`Default:\n  数値型: Mean（平均値で補完）\n  文字列型: Fixed Value → "不明"\n\nColumn Settings（個別設定）:\n  age列: Median（外れ値の影響を避けたい場合）\n  region列: Most Frequent（最頻の地域名で補完）`,
+      note:'「Remove Row」を選ぶと欠損がある行がすべて削除されます。重要なデータが消えないよう事前に件数を確認してください。'
+    },
+    tips:['「Remove Row」で欠損がある行を削除することも可能'] },
+
+  { id:'unpivot', name:'Unpivot', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'横持ちデータ（ピボット形式）を縦持ち（トール形式）に変換します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'「Value columns」に横展開されている列を指定すると、「Column」と「Value」の2列に変換されます。',
+    config:[
+      {f:'Retained columns（上部）', d:'縦持ちに変換せずそのまま残す列（キー列）。顧客ID・日付などの識別列をここに入れる。'},
+      {f:'Value columns（下部）', d:'横展開されている列群。ここに指定した列が「列名」と「値」の2列に変換される。'},
+      {f:'Column name（出力）', d:'元の列名が入る列の名前（デフォルト: "Column"）。'},
+      {f:'Value name（出力）', d:'値が入る列の名前（デフォルト: "Value"）。'},
+    ],
+    example:{
+      title:'月別売上（横持ち）を縦持ちに変換する場合',
+      code:`[変換前（横持ち）]\n店舗  | 1月売上 | 2月売上 | 3月売上\nA店   | 100     | 120     | 90\n\n設定:\n  Retained: 店舗\n  Value columns: 1月売上, 2月売上, 3月売上\n  Column name: 月\n  Value name: 売上\n\n[変換後（縦持ち）]\n店舗  | 月      | 売上\nA店   | 1月売上 | 100\nA店   | 2月売上 | 120\nA店   | 3月売上 | 90`,
+      note:'逆変換（縦→横）はPivotノードを使います。'
+    },
+    tips:['Pivotノードで逆変換（縦→横）も可能'] },
+
+  // Filter
+  { id:'row-filter', name:'Row Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'条件に合う行だけを残す（または除外する）フィルタノードです。',
+    ports:{ in:['データテーブル'], out:['マッチした行','マッチしない行'] },
+    detail:'数値範囲・文字列一致・正規表現・欠損値チェックなどで条件設定できます。',
+    config:[
+      {f:'Column to test', d:'フィルタ対象の列を選択。'},
+      {f:'Filter criteria', d:'条件の種類を選択:\n・value in range（数値範囲）\n・matching pattern（文字列一致・正規表現）\n・is missing / is not missing（欠損値チェック）'},
+      {f:'Include / Exclude rows', d:'「Include rows that match criteria」= 条件に合う行を残す（正フィルタ）\n「Exclude rows that match criteria」= 条件に合う行を除く（逆フィルタ）'},
+      {f:'Lower bound / Upper bound', d:'数値範囲の場合。「Use lower bound」と「Use upper bound」でそれぞれ下限・上限を設定。'},
+      {f:'Pattern / Reg.Exp.', d:'文字列一致の場合。「is regular expression」にチェックすると正規表現が使える。'},
+    ],
+    example:{
+      title:'金額が1万円以上の行だけを残す場合',
+      code:`Column to test: 金額\nFilter criteria: value in range\n  Use lower bound: ✅  Lower bound: 10000\n  Use upper bound: ☐ （上限なし）\nInclude rows that match criteria: ✅\n\n▼ 文字列フィルタ例\nColumn: region\nPattern: 東京.*   （正規表現で「東京」で始まる値）\nReg.Exp.: ✅ ON`,
+      note:'2つ目の出力ポートに「マッチしない行」が出ます。条件を満たさないデータの確認や別処理に活用できます。'
+    },
+    tips:['2つの出力ポートで「条件に合う」と「合わない」に分岐できる','正規表現での部分一致フィルタも対応'] },
+
+  { id:'row-splitter', name:'Row Splitter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'Row Filterと同様ですが、分岐が目的の場合に意味的に使い分けます。',
+    ports:{ in:['データテーブル'], out:['マッチ','非マッチ'] },
+    detail:'Row Filterとほぼ同機能。ワークフローの可読性のために使い分けることが多い。',
+    config:[
+      {f:'（Row Filterと同一）', d:'設定項目はRow Filterとほぼ同じ。「分岐」を意図することを明示するためにこちらを使う。'},
+    ],
+    example:{
+      title:'正常データと異常データに分岐する場合',
+      code:`Column: status_flag\nPattern: "OK"\nInclude rows that match: ✅\n\n→ 上の出力ポート: status = "OK" の正常行\n→ 下の出力ポート: それ以外の異常行\n\n（それぞれ別の処理フローに接続する）`,
+      note:'下流で2本の処理ラインを組む場合はRow Splitterを使うとワークフローが読みやすくなります。'
+    },
+    tips:['分岐処理の入口として使うと見やすい'] },
+
+  { id:'nominal-value-row-filter', name:'Nominal Value Row Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'文字列（カテゴリ）列の値リストでフィルタします。チェックボックスで値を選択するだけ。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'「Selected values」に残したい値をチェックします。新しい値が来た場合の挙動も設定できます。',
+    config:[
+      {f:'Column', d:'フィルタしたいカテゴリ列を選択。自動的に値の一覧が読み込まれる。'},
+      {f:'Selected values', d:'チェックを入れた値の行が残る（Include）または除かれる（Exclude）。'},
+      {f:'Include / Exclude', d:'チェックした値を「残す」か「除く」かを切り替え。'},
+      {f:'If non-matching values', d:'新しい値が来たときの動作。「Keep all」= すべて残す、「Remove rows」= 削除。'},
+    ],
+    example:{
+      title:'「東京」「大阪」「愛知」の行だけ残す場合',
+      code:`Column: 都道府県\n\nSelected values（チェック）:\n  ✅ 東京都\n  ✅ 大阪府\n  ✅ 愛知県\n  ☐ その他…\n\nInclude rows with selected values: ✅`,
+      note:'値一覧はノード設定を開いたとき自動取得されます。上流データが変わったら「Refresh」ボタンで再取得してください。'
+    },
+    tips:['大量の値から選ぶ場合はRow Filterの正規表現が便利'] },
+
+  { id:'duplicate-row-filter', name:'Duplicate Row Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'重複行を除去します。重複の基準となる列を指定できます。',
+    ports:{ in:['データテーブル'], out:['ユニーク行','重複行'] },
+    detail:'「Row selection」で最初の行を残すか最後を残すかを選べます。',
+    config:[
+      {f:'Choose columns', d:'重複判定に使う列を指定。「All columns」= 全列が同じ行を重複とみなす。特定列を選ぶと部分一致重複を除去。'},
+      {f:'Row selection', d:'重複がある場合にどの行を残すか。「Keep first occurrence」= 最初の行を残す（一般的）、「Keep last occurrence」= 最後の行。'},
+    ],
+    example:{
+      title:'顧客IDの重複を除去して顧客マスタを作る場合',
+      code:`Choose columns: customer_id のみ\n（customer_idが同じ行のうち1件だけ残す）\n\nRow selection: Keep first occurrence\n\n→ 上の出力ポート: ユニークな顧客行\n→ 下の出力ポート: 重複と判定された行（確認用）`,
+      note:'重複行は下の出力ポートに出るので、何件重複していたかを確認できます。'
+    },
+    tips:['全列で重複チェックしたい場合は「Choose columns」でAll columnsを選択'] },
+
+  // Join
+  { id:'joiner', name:'Joiner', cat:'join', badge:'結合', badgeCls:'badge-join',
+    desc:'2つのテーブルをキー列で結合します（Inner / Left / Right / Full Outer Joinに対応）。',
+    ports:{ in:['左テーブル','右テーブル'], out:['結合結果','左のみ','右のみ'] },
+    detail:'「Join mode」でJoin種類を選択。「Join column(s)」で結合キーを指定します。同名列は「Duplicate column handling」で制御。',
+    config:[
+      {f:'Join mode', d:'Inner Join: 両方に存在する行のみ\nLeft Outer Join: 左テーブルの全行＋右の一致行\nRight Outer Join: 右テーブルの全行＋左の一致行\nFull Outer Join: 両テーブルの全行'},
+      {f:'Join columns（Joiner タブ）', d:'結合キーを指定。左テーブルの列と右テーブルの列をペアで設定。「Add joining criteria」で複合キーも可。'},
+      {f:'Duplicate column handling', d:'両テーブルに同名列がある場合の扱い。「Do not execute」「Append suffix」「Filter duplicates」から選択。'},
+      {f:'Output columns（Column Selectionタブ）', d:'出力に含める列を左右それぞれ選択できる。不要列を事前に除外しておくと後続がシンプルになる。'},
+    ],
+    example:{
+      title:'売上テーブルに顧客名をLeft Joinで付ける場合',
+      code:`Join mode: Left Outer Join\n\nJoiner タブ:\n  Top input（左）: customer_id\n  Bottom input（右）: cust_id\n\nDuplicate column handling:\n  Append suffix（同名列に _right を付加）\n\n→ 左テーブルの全行が残り、\n  右の顧客名列がマッチした行に追加される。\n  マッチしない行は顧客名が Missing になる。`,
+      note:'3つの出力ポートのうち下2つ（左のみ・右のみ）を使うと、結合できなかった行だけを取り出せます。'
+    },
+    tips:['LEFT JOINはJoin mode=Left Outer Join','キーが複数の場合は「Add joining criteria」で追加','結合後に不要な列はColumn Filterで削除'] },
+
+  { id:'concatenate', name:'Concatenate', cat:'join', badge:'結合', badgeCls:'badge-join',
+    desc:'複数のテーブルを縦方向に連結（UNION）します。',
+    ports:{ in:['テーブル1','テーブル2','...'], out:['連結テーブル'] },
+    detail:'入力ポートを追加することで3つ以上のテーブルも一度に連結できます。',
+    config:[
+      {f:'入力ポートの追加', d:'ノードを右クリック→「Add port」で入力ポートを増やせる。3テーブル以上の連結に使う。'},
+      {f:'If schemas differ', d:'列構成が異なる場合の挙動。「Fill with Missing Values」= 不足列をMissingで埋める（推奨）、「Intersection」= 共通列のみ残す。'},
+      {f:'Append suffix to duplicate RowIDs', d:'ONにすると重複する行IDに自動でサフィックスを付けてエラーを回避。通常はONを推奨。'},
+    ],
+    example:{
+      title:'1月〜3月の月次CSVを縦連結する場合',
+      code:`入力ポート1: January.csv\n入力ポート2: February.csv\n入力ポート3: March.csv\n（右クリック→Add portで3つにする）\n\nIf schemas differ: Fill with Missing Values\nAppend suffix to duplicate RowIDs: ✅ ON\n\n→ 3ファイルが縦に連結されて1テーブルになる`,
+      note:'ループ（Loop End）と組み合わせると、フォルダ内のファイルを自動的にすべて縦連結できます。'
+    },
+    tips:['列名が一致しない場合は「Fill with Missing Values」で対処','「Append suffix to duplicate RowIDs」で行ID重複を回避'] },
+
+  { id:'cross-joiner', name:'Cross Joiner', cat:'join', badge:'結合', badgeCls:'badge-join',
+    desc:'2つのテーブルの全組み合わせ（直積）を生成します。',
+    ports:{ in:['テーブル1','テーブル2'], out:['直積テーブル'] },
+    detail:'m行 × n行 = m×n行の結果テーブルになります。',
+    config:[
+      {f:'（設定項目なし）', d:'接続するだけで自動的に全組み合わせを生成する。入力テーブル1が m行、テーブル2が n行なら出力は m×n 行になる。'},
+    ],
+    example:{
+      title:'商品リスト×サイズリストの全組み合わせを作る場合',
+      code:`テーブル1（商品）:\n  商品名\n  ───────\n  Tシャツ\n  パーカー\n\nテーブル2（サイズ）:\n  サイズ\n  ───────\n  S\n  M\n  L\n\n→ 出力（2×3 = 6行）:\n  商品名    | サイズ\n  Tシャツ   | S\n  Tシャツ   | M\n  Tシャツ   | L\n  パーカー  | S\n  パーカー  | M\n  パーカー  | L`,
+      note:'行数が多いテーブル同士には絶対に使わないでください（1000行×1000行 = 100万行になります）。'
+    },
+    tips:['大きなテーブル同士には要注意（行数が爆発的に増加）'] },
+
+  // Aggregation
+  { id:'group-by', name:'GroupBy', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'列の値でグループ化して集計（合計・平均・件数など）を行います。SQLのGROUP BYに相当。',
+    ports:{ in:['データテーブル'], out:['集計テーブル'] },
+    detail:'「Groups」タブでグループキー列を指定し、「Manual Aggregation」タブで集計方法（Sum/Mean/Count/Max/Min等）を設定します。',
+    config:[
+      {f:'Groups タブ', d:'グループ化のキーとなる列を「Group columns」に追加する（例: 店舗コード、月）。'},
+      {f:'Manual Aggregation タブ', d:'集計したい列を追加し、集計方法（Aggregation method）を選択する。'},
+      {f:'主な集計方法', d:'Sum（合計）/ Mean（平均）/ Count（件数）/ Count distinct（ユニーク数）/ Max（最大）/ Min（最小）/ First（最初の値）/ Concatenate（文字列結合）'},
+      {f:'Column Name（右端列）', d:'集計後の列名を変更できる。例:「金額 Sum」→「売上合計」にリネーム。'},
+    ],
+    example:{
+      title:'店舗別・月別の売上合計と件数を集計する場合',
+      code:`Groups タブ:\n  Group columns: 店舗コード, 売上月\n\nManual Aggregation タブ:\n  列: 売上金額  →  方法: Sum   →  列名: 売上合計\n  列: 売上金額  →  方法: Count →  列名: 売上件数\n  列: 顧客ID   →  方法: Count distinct → 列名: ユニーク顧客数\n\n→ 出力: 店舗コード, 売上月, 売上合計, 売上件数, ユニーク顧客数`,
+      note:'同じ列を複数の集計方法で使いたい場合は、「+」ボタンで同じ列を複数回追加できます。'
+    },
+    tips:['Countは全行数、Count distinctはユニーク数','文字列列にはFirst/Last/Concatenateなどが使える','集計後の列名は「Column Name」で変更できる'] },
+
+  { id:'pivot', name:'Pivot', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'グループ化＋ピボット（縦→横展開）を同時に行います。',
+    ports:{ in:['データテーブル'], out:['ピボットテーブル','元のテーブル','ピボット値'] },
+    detail:'「Groups」=行ラベル、「Pivots」=ヘッダ展開列、「Manual Aggregation」=集計内容を設定。',
+    config:[
+      {f:'Groups タブ', d:'行ラベルにする列（例: 店舗コード）。'},
+      {f:'Pivots タブ', d:'列ヘッダに展開する列（例: 月）。この列の値が新しい列名になる。'},
+      {f:'Manual Aggregation タブ', d:'セルの値となる集計（例: 売上金額 → Sum）。'},
+    ],
+    example:{
+      title:'店舗別×月別の売上クロス集計表を作る場合',
+      code:`Groups: 店舗コード\nPivots: 月\nAggregation: 売上金額 → Sum\n\n→ 出力:\n店舗コード | 1月_Sum | 2月_Sum | 3月_Sum\nA店        | 100     | 120     | 90\nB店        | 80      | 95      | 110`,
+      note:'ピボット後の列名は「月_集計方法」の形式になります。Column Renameで変更できます。'
+    },
+    tips:['ExcelのピボットテーブルはKNIMEではこのノードで再現'] },
+
+  { id:'statistics', name:'Statistics', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'数値列の基本統計量（平均・標準偏差・最小・最大・中央値など）を一括計算します。',
+    ports:{ in:['データテーブル'], out:['統計テーブル','外れ値テーブル'] },
+    detail:'全数値列の統計量を出力します。EDA（探索的データ分析）の最初のステップとして使います。',
+    config:[
+      {f:'（設定ほぼ不要）', d:'接続するだけで自動的にすべての数値列の統計量を計算する。'},
+      {f:'Column filter', d:'特定の列だけ計算したい場合に指定できる。'},
+    ],
+    example:{
+      title:'データ品質の初回チェックに使う場合',
+      code:`設定: 特に変更不要（デフォルトでOK）\n\n→ 出力テーブルの見方:\n  列名: Mean / Std. deviation / Minimum / Maximum / Median\n       Missing values count / Skewness / Kurtosis\n\n→ 確認ポイント:\n  ・Missing values count が多い列はデータ欠損の疑い\n  ・Min/Max が異常に大きい/小さい列は外れ値の疑い\n  ・外れ値テーブル（2番目の出力）で外れ値の行を確認`,
+      note:'まずこのノードでデータ全体の統計量を確認してから、前処理の方針を決めるのがおすすめです。'
+    },
+    tips:['外れ値テーブルで異常値のある行を確認できる'] },
+
+  { id:'sorter', name:'Sorter', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'指定した列で行を並び替えます。複数列の優先順位付きソートも可能。',
+    ports:{ in:['データテーブル'], out:['ソート済みテーブル'] },
+    detail:'「Add criteria」で複数列のソートキーを追加できます。昇順/降順も列ごとに設定。',
+    config:[
+      {f:'Sort criteria', d:'ソートキーとなる列を「Add criteria」で追加。列名と昇順/降順を設定。'},
+      {f:'Ascending / Descending', d:'Ascending = 昇順（小→大）、Descending = 降順（大→小）。'},
+      {f:'Alphanumeric sort', d:'文字列列に含まれる数字を数値として比較。「10」を「2」より大きいと正しく扱える。'},
+    ],
+    example:{
+      title:'売上月の昇順・売上金額の降順で並べる場合',
+      code:`Sort criteria:\n  1位: 売上月    → Ascending（古い月から）\n  2位: 売上金額  → Descending（高い金額から）\n\n▼ Alphanumeric sortの例\n  「item1」「item2」…「item10」を正しい順に並べたい場合:\n  Alphanumeric sort: ✅ ON\n  （OFFだと文字列比較で item10 が item2 より前になってしまう）`,
+      note:'複数条件は上から順に優先されます。追加した条件はドラッグで並び順を変えられます。'
+    },
+    tips:['「Alphanumeric sort」を有効にすると文字列の数字部分を数値として比較'] },
+
+  // ML
+  { id:'decision-tree-learner', name:'Decision Tree Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'決定木モデルを学習します。分類問題に対応。',
+    ports:{ in:['学習データ'], out:['決定木モデル'] },
+    detail:'「Class column」でターゲット変数を指定します。深さ・分割基準（Gini/Gain Ratio）を設定。',
+    config:[
+      {f:'Class column', d:'予測したいターゲット変数の列名（文字列/カテゴリ列）。'},
+      {f:'Quality measure', d:'分割基準。「Gini index」= 不純度ベース、「Gain ratio」= 情報ゲームベース（推奨）、「Information gain」。'},
+      {f:'Pruning method', d:'過学習防止の枝刈り。「MDL」（最小記述長）が一般的。「No pruning」は過学習しやすい。'},
+      {f:'Min number records', d:'リーフノードの最小行数。小さすぎると過学習になる。デフォルト2から5〜10に増やすのが安全。'},
+      {f:'Max tree depth', d:'木の最大深さ。制限しないと過学習しやすい。5〜10を目安に設定。'},
+    ],
+    example:{
+      title:'顧客の購入有無を予測するモデルを学習する場合',
+      code:`Class column: 購入フラグ（0/1 または Yes/No）\nQuality measure: Gain ratio\nPruning method: MDL\nMin number records: 5\nMax tree depth: 7（チェックを入れて制限する）\n\n→ 特徴量列（年齢, 性別, 地域など）は\n  自動的に学習に使われる（Class column以外）`,
+      note:'学習前にPartitioningノードで学習:テスト=70:30に分割し、テストデータでScorer評価するのが基本です。'
+    },
+    tips:['過学習対策に「Pruning method」を設定','モデルの可視化にはDecision Tree Viewノードを使用'] },
+
+  { id:'decision-tree-predictor', name:'Decision Tree Predictor', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'学習済み決定木モデルを使って新データに予測を行います。',
+    ports:{ in:['決定木モデル','予測対象データ'], out:['予測結果テーブル'] },
+    detail:'予測クラスと確率列が追加されます。',
+    config:[
+      {f:'Append columns with class probabilities', d:'ONにすると各クラスの予測確率列が追加される。閾値調整に活用できる。'},
+      {f:'Prediction column name', d:'予測結果列の列名。デフォルトは「Prediction (クラス列名)」。'},
+    ],
+    example:{
+      title:'新規顧客データに購入予測を行う場合',
+      code:`入力1（上ポート）: Decision Tree Learnerの出力モデル\n入力2（下ポート）: 予測対象の顧客テーブル\n\nAppend class probabilities: ✅ ON\nPrediction column name: 購入予測\n\n→ 出力テーブルに追加される列:\n  購入予測（Yes/No）\n  P(Yes)（Yesの確率）\n  P(No)（Noの確率）`,
+      note:'確率列を使って「P(Yes) > 0.7 の行だけに施策を打つ」などの閾値判断ができます。'
+    },
+    tips:['確率列を活用して閾値を調整できる'] },
+
+  { id:'k-means', name:'K-Means', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'K-Meansクラスタリングを実行します。データを指定したK個のクラスタに分類。',
+    ports:{ in:['データテーブル'], out:['クラスタモデル','クラスタ中心テーブル'] },
+    detail:'「Number of clusters」でK値を設定します。数値列に正規化を適用してから使うのが一般的。',
+    config:[
+      {f:'Number of clusters', d:'分割するクラスタ数（K）。Elbow法で決めるのが一般的（複数Kでループして評価）。'},
+      {f:'Max iterations', d:'収束しない場合の最大反復数。デフォルト99で通常問題ない。'},
+      {f:'Seed', d:'乱数シード。固定すると実行のたびに同じ結果になる（再現性確保）。'},
+      {f:'Column filter', d:'クラスタリングに使う列を選択。文字列列は除き、正規化済みの数値列のみ使う。'},
+    ],
+    example:{
+      title:'顧客を購買行動で3グループに分ける場合',
+      code:`事前準備: Normalizerで各数値列を0〜1に正規化\n\nNumber of clusters: 3\nMax iterations: 100\nSeed: 12345（固定して再現性を確保）\nColumn filter: 購買頻度, 平均購買金額, 最終購買日（数値のみ）\n\n→ 出力テーブルに「Cluster」列（Cluster_0, Cluster_1, Cluster_2）が追加される`,
+      note:'Kの値を決めるにはループで複数のKを試し、クラスタ内誤差の変化（Elbow法）を確認するのが定番です。'
+    },
+    tips:['Normalizerノードで前処理してから使用','Elbow法でKの値を決めるにはループ処理が便利'] },
+
+  { id:'scorer', name:'Scorer', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'分類モデルの評価（混同行列・精度・適合率・再現率など）を行います。',
+    ports:{ in:['予測付きテーブル'], out:['混同行列','精度テーブル'] },
+    detail:'「First column」に正解列、「Second column」に予測列を指定します。',
+    config:[
+      {f:'First column', d:'正解ラベルの列名（正解データ）。'},
+      {f:'Second column', d:'予測ラベルの列名（モデルの予測結果）。'},
+    ],
+    example:{
+      title:'決定木の予測精度を評価する場合',
+      code:`First column:  購入フラグ（正解）\nSecond column: 購入予測（予測結果）\n\n→ 出力テーブル（精度テーブル）の見方:\n  Accuracy:   全体の正解率（例: 0.82 = 82%）\n  Recall:     再現率（正例の検出率）\n  Precision:  適合率（予測した正例のうち本当に正例の割合）\n  F-measure:  RecallとPrecisionの調和平均\n  Cohen's κ:  ランダム予測との比較（0.8以上が良好）`,
+      note:'Accuracyだけでなく、RecallとPrecisionのバランスも確認しましょう。不均衡データではAccuracyだけでは評価できません。'
+    },
+    tips:['Accuracy・Recall・Precisionの他にCohen\'s Kappaも確認できる'] },
+
+  { id:'normalizer', name:'Normalizer', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'数値列を正規化（Min-Max正規化 / Z-score標準化）します。機械学習の前処理に必須。',
+    ports:{ in:['データテーブル'], out:['正規化テーブル','正規化モデル'] },
+    detail:'「Z-Score Normalization」で平均0・分散1に標準化、「Min-Max Normalization」で0〜1の範囲にスケーリング。',
+    config:[
+      {f:'Normalization method', d:'Min-Max: 0〜1の範囲にスケーリング（範囲が明確な場合）\nZ-Score: 平均0・標準偏差1に標準化（外れ値が多い場合に適切）\nDecimal Scaling: 最大絶対値で割る'},
+      {f:'Column filter', d:'正規化する列を選択。カテゴリ列・ID列は除外する。'},
+    ],
+    example:{
+      title:'K-MeansやSVMの前処理として使う場合',
+      code:`Normalization method: Min-Max Normalization\n  New minimum: 0.0\n  New maximum: 1.0\n\nColumn filter（Include）:\n  年齢, 購買金額, 購買頻度\n  （IDや文字列列はExcludeに）\n\n→ 2番目の出力ポート（正規化モデル）を保存しておき\n  本番データには Normalizer Apply ノードで適用する`,
+      note:'学習データで作った正規化モデルを本番データにも同じパラメータで適用するために、2番目の出力ポートを必ず接続・保存してください。'
+    },
+    tips:['学習データで作ったモデルを本番データにNormalizer Applyで適用する'] },
+
+  // Loop
+  { id:'table-row-to-variable', name:'Table Row To Variable Loop Start', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'テーブルの各行をフロー変数として取り出しながらループします。',
+    ports:{ in:['データテーブル'], out:['フロー変数','データテーブル'] },
+    detail:'1行ずつループし、各列の値がフロー変数として利用できます。',
+    config:[
+      {f:'（設定不要）', d:'接続するだけで動作する。入力テーブルの列名がそのままフロー変数名になる。'},
+      {f:'フロー変数の参照方法', d:'文字列列は $${S列名}$$、整数列は $${I列名}$$、数値列は $${D列名}$$ で参照する。'},
+    ],
+    example:{
+      title:'複数ファイルパスのリストからファイルを順番に読む場合',
+      code:'入力テーブル:\n  filepath（列名）\n  ─────────────────────────\n  C:/data/january.csv\n  C:/data/february.csv\n  C:/data/march.csv\n\n→ ループ1回目: $${Sfilepath}$$ = "C:/data/january.csv"\n→ ループ2回目: $${Sfilepath}$$ = "C:/data/february.csv"\n→ ループ3回目: $${Sfilepath}$$ = "C:/data/march.csv"\n\nCSV Readerの File/URL に $${Sfilepath}$$ を設定することで\n各ループで対応するファイルを読み込める',
+      note:'フロー変数を設定するには、各ノードの設定画面の右下にある「Flow Variables」タブから列名を入力します。'
+    },
+    tips:['ループ変数名は列名と同じになる','各反復でフロー変数を使って処理を変えられる'] },
+
+  { id:'chunk-loop-start', name:'Chunk Loop Start', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'テーブルを一定行数（チャンク）ごとに分割してループ処理します。',
+    ports:{ in:['データテーブル'], out:['チャンクテーブル'] },
+    detail:'「Chunk size」で1回のループで処理する行数を設定します。',
+    config:[
+      {f:'Chunk size', d:'1回のループで処理する行数。例: 1000 なら1000行ずつ処理する。'},
+    ],
+    example:{
+      title:'100万行のデータを1万行ずつ分割処理する場合',
+      code:`Chunk size: 10000\n\n→ ループ1回目: 行1〜10000\n→ ループ2回目: 行10001〜20000\n→ …\n→ 最終ループ: 残りの行（10000行未満の場合あり）\n\nLoop End（Concatenate）で全チャンクの結果を縦連結`,
+      note:'最後のチャンクは設定したChunk sizeより少ない行数になる可能性があります。処理がエラーにならないよう確認してください。'
+    },
+    tips:['大量データを分割処理するときに便利','最後のチャンクは設定より少ない行数になることがある'] },
+
+  { id:'loop-end', name:'Loop End', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'ループの終端ノード。各反復結果を集約して一つのテーブルにまとめます。',
+    ports:{ in:['各反復の結果テーブル'], out:['集約テーブル'] },
+    detail:'デフォルトはConcatenate（縦連結）。「Collect rows per row」などの設定もあります。',
+    config:[
+      {f:'Row collection policy', d:'Concatenate rows（デフォルト）: 各反復の結果テーブルを縦に連結する。\nCollect rows per row: 各反復の結果を1行に集約する（上級者向け）。'},
+      {f:'Add iteration column', d:'ONにすると「Iteration」列が追加され、何回目のループの結果かが分かる。'},
+      {f:'Propagate modified loop variables', d:'ループ変数を次のループに引き継ぐ場合にON（Recursive Loopで使用）。'},
+    ],
+    example:{
+      title:'複数ファイルの読込結果を1テーブルに集約する場合',
+      code:`Row collection policy: Concatenate rows\nAdd iteration column: ✅ ON（デバッグ用）\n\n→ ループ1の結果（100行）\n→ ループ2の結果（120行）\n→ ループ3の結果（90行）\n─────────────────────\n→ Loop Endの出力: 310行（全部縦連結）\n   + Iteration列: 0, 0, ..., 1, 1, ..., 2, 2, ...`,
+      note:'「Add iteration column」はデバッグに便利ですが、最終出力が不要な場合はColumn Filterで削除してください。'
+    },
+    tips:['「Add iteration column」でどの反復の結果かを示す列を追加できる'] },
+
+  { id:'variable-loop-start', name:'Variable Loop Start', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'フロー変数リストを使って変数の値を変えながらループします。',
+    ports:{ in:['フロー変数テーブル'], out:['フロー変数','データ'] },
+    detail:'各行の変数値を使って処理を繰り返します。',
+    config:[
+      {f:'（設定不要）', d:'Table Row To Variable Loop Startとほぼ同じ動作。入力テーブルの各行の値がフロー変数としてループ内に流れる。'},
+    ],
+    example:{
+      title:'K-Meansのクラスタ数3〜7で結果を比較する場合',
+      code:'事前準備（Table Creatorで作成）:\n  k（Integer列）\n  ────\n  3\n  4\n  5\n  6\n  7\n\nVariable Loop Start に接続\n→ ループ内の K-Means ノードの「Number of clusters」に\n  フロー変数 $${Ik}$$ を設定\n\n→ ループ1: k=3 でクラスタリング → 評価\n→ ループ2: k=4 でクラスタリング → 評価\n→ …\nLoop Endで5パターンの評価結果を縦連結して比較',
+      note:'「Flow Variables」タブを使ってノードの設定値をフロー変数で上書きする方法が鍵です。ノード設定画面右下のFlow Variablesタブから設定できます。'
+    },
+    tips:['パラメータスイープ（複数条件の試行）に有効'] },
+
+  // ==================== 追加 IO ====================
+  { id:'json-reader', name:'JSON Reader', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'JSONファイルを読み込んでKNIMEテーブルに変換します。REST APIの結果や設定ファイルの読み込みに使います。',
+    ports:{ in:[], out:['データテーブル'] },
+    detail:'JSONのパスを指定すると、ネストされたJSONも自動的にフラット化してテーブルに変換します。',
+    config:[
+      {f:'File/URL', d:'読み込むJSONファイルのパスまたはURL。'},
+      {f:'JSONPath', d:'特定のJSONパスのみ取得する場合に指定。例: $.results[*]'},
+    ],
+    example:{ title:'REST APIの結果を読み込む場合', code:'File: C:/data/api_response.json\nJSONPath: $.data[*]  （data配列の全要素）\n\n→ ネストされたオブジェクトは "key.subkey" 形式の列名に展開される', note:'深くネストされたJSONは列数が多くなります。Column Filterで必要な列に絞ってから処理してください。' },
+    tips:['HTTP RetreiverノードでAPIを呼び出し→JSON Readerで解析の流れが定番','配列要素はUnroll Columnsで縦展開できる'] },
+
+  { id:'list-files', name:'List Files/Folders', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'指定フォルダ内のファイルやフォルダの一覧テーブルを作成します。ファイルループの起点として必須のノードです。',
+    ports:{ in:[], out:['ファイル一覧テーブル'] },
+    detail:'ファイルパス・ファイル名・サイズ・更新日時などの情報が列として出力されます。',
+    config:[
+      {f:'Folder', d:'スキャンするフォルダのパス。'},
+      {f:'Filter by extension', d:'特定拡張子のみ絞り込む。例: csv, xlsx'},
+      {f:'Search recursively', d:'サブフォルダも再帰的にスキャンする場合はON。'},
+    ],
+    example:{ title:'C:/dataフォルダのCSVファイル一覧を取得する場合', code:'Folder: C:/data\nFilter by extension: csv\nSearch recursively: ✅ ON\n\n→ 出力列: Path（絶対パス）, Name（ファイル名）, Size, Last Modified', note:'出力されるPath列をTable Row To Variable Loop Startに接続し、CSV Readerに変数を渡すとファイル一括処理が実現できます。' },
+    tips:['ファイルループの定番起点ノード','Sort後にTop-k Row Filterと組み合わせて最新N件だけ処理する使い方も有効'] },
+
+  { id:'db-connector', name:'DB Connector', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'データベースへの接続を確立します。DB Reader / DB Writer / DB ExecutorなどDB系ノードの入力として使います。',
+    ports:{ in:[], out:['DB接続'] },
+    detail:'JDBC URLで接続先を指定します。接続情報は一度設定すればDB系ノード全体で共有できます。',
+    config:[
+      {f:'Database driver', d:'使用するJDBCドライバを選択。MySQL / PostgreSQL / Oracle / SQL Server / SQLite など。'},
+      {f:'Database URL', d:'JDBC接続URL。例: jdbc:mysql://localhost:3306/mydb'},
+      {f:'User / Password', d:'DB認証情報。パスワードはKNIMEが暗号化して保存。'},
+    ],
+    example:{ title:'MySQLに接続する場合', code:'Database driver: MySQL\nDatabase URL: jdbc:mysql://192.168.1.10:3306/sales_db\nUser: analyst\nPassword: xxxxxxxx\n\n→ Test connectionボタンで接続確認\n→ 出力ポートをDB Reader / DB Writerに接続して使用', note:'パスワードは平文で保存されないため安全ですが、ワークフローを共有する場合は接続設定を見直してください。' },
+    tips:['接続テストは必ずTest connectionボタンで確認','OracleはJDBCドライバを別途ダウンロードしてKNIMEに追加が必要'] },
+
+  { id:'db-writer', name:'DB Writer', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'テーブルをデータベースに書き込みます（INSERT）。既存テーブルへの追記や新規テーブル作成も可能。',
+    ports:{ in:['DB接続','データテーブル'], out:[] },
+    detail:'書き込み先テーブル名を指定します。テーブルが存在しない場合は自動作成オプションもあります。',
+    config:[
+      {f:'Table name', d:'書き込み先DBテーブル名。'},
+      {f:'If table exists', d:'Append（追記）/ Truncate（全削除して書込）/ Fail（エラー停止）。'},
+      {f:'Create table', d:'テーブルが存在しない場合に自動作成する場合はON。'},
+    ],
+    example:{ title:'集計結果をDBに書き込む場合', code:'Table name: monthly_summary\nIf table exists: Truncate（毎回全削除して書き直す）\nCreate table: ✅ ON\n\n→ 入力ポート1: DB Connectorの接続\n→ 入力ポート2: GroupByなどの集計結果テーブル', note:'本番DBへの書き込みは必ずテスト環境で確認してから実行してください。Truncateは既存データを全削除します。' },
+    tips:['バッチ更新はBatch sizeを増やすと高速化できる','Transaction modeをAuto-commitにすると中断時でもロールバックされる'] },
+
+  { id:'http-retriever', name:'HTTP Retriever', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'HTTP GETリクエストを送り、レスポンス（JSON/HTMLなど）を取得します。REST APIの呼び出しに使います。',
+    ports:{ in:['URLテーブル（任意）'], out:['レスポンステーブル'] },
+    detail:'URL列を持つテーブルを入力すると複数URLを一括取得できます。ループとも組み合わせ可能。',
+    config:[
+      {f:'URL', d:'リクエスト先URLを列名またはフロー変数で指定。'},
+      {f:'Request method', d:'GET / POST / PUT / DELETE。通常はGET。'},
+      {f:'Request header', d:'APIキーなどのヘッダを追加できる。例: Authorization: Bearer {token}'},
+    ],
+    example:{ title:'天気APIからデータを取得する場合', code:'URL列: https://api.example.com/weather?city=Tokyo\nMethod: GET\nHeader: Content-Type: application/json\n\n→ レスポンスBody列にJSON文字列が格納される\n→ JSON Reader（またはJSON Path）でパース', note:'APIキーは平文でワークフローに書かず、フロー変数や認証情報設定ノードを使うことを推奨します。' },
+    tips:['認証が必要なAPIはAuthenticator(API Key)ノードと組み合わせる','レート制限があるAPIはChunk Loop + Wait(1秒)で対策'] },
+
+  { id:'table-reader', name:'Table Reader', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'KNIMEが独自形式で保存したテーブルファイル（.table）を読み込みます。ワークフロー間のデータ受け渡しに使います。',
+    ports:{ in:[], out:['データテーブル'] },
+    detail:'Table Writerで保存したファイルを高速に読み込めます。CSV/Excelより読込が高速。',
+    config:[
+      {f:'File/URL', d:'読み込む.tableファイルのパス。'},
+    ],
+    example:{ title:'前処理済みデータを別ワークフローで使い回す場合', code:'ワークフローA（前処理）:\n  → 処理 → Table Writer → output.table として保存\n\nワークフローB（分析）:\n  Table Reader → output.table を読み込む\n  → 毎回前処理を実行せずに済む', note:'大量データの前処理結果をTable形式で保存すると、分析ワークフローの実行時間を大幅に短縮できます。' },
+    tips:['CSVより読込が10〜100倍高速','型情報が保持されるため型変換ノードが不要になる'] },
+
+  { id:'table-writer', name:'Table Writer', cat:'io', badge:'入出力', badgeCls:'badge-io',
+    desc:'テーブルをKNIME独自形式（.table）で保存します。ワークフロー内の中間結果の保存に便利です。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'Table Readerと対で使います。バイナリ形式のため高速かつ型情報も保持されます。',
+    config:[
+      {f:'File/URL', d:'保存先ファイルパス。拡張子は .table が一般的。'},
+      {f:'If file exists', d:'Overwrite / Abort（エラー停止）。'},
+    ],
+    example:{ title:'重い前処理の結果を保存する場合', code:'File: C:/workflow_data/preprocessed.table\nIf file exists: Overwrite\n\n→ CSV Readerで10GBのデータ読込+前処理\n→ Table Writerで保存（約1分）\n→ 次回実行時はTable Readerで読込（数秒）', note:'.tableファイルはKNIME専用形式のため他のツールでは読めません。他チームとの共有はCSV/Excelを使ってください。' },
+    tips:['大量データの中間保存に最適','ループ内で使うと大量の小さなファイルが生成されるので注意'] },
+
+  // ==================== 追加 Data Manipulation ====================
+  { id:'rule-engine', name:'Rule Engine', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'IF-THEN形式のルールを記述して新しい列を作成します。複雑な条件分岐を直感的に書けます。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'複数のIF条件を上から順に評価し、最初にマッチしたルールの値を返します。どれにもマッチしない場合はデフォルト値を返します。',
+    config:[
+      {f:'ルール記述欄', d:'IF 条件式 => 値 の形式で1行ずつ記述。条件は $列名$ op 値 の形式。'},
+      {f:'DEFAULT', d:'どのルールにもマッチしない行の値。最後の行に記述。'},
+      {f:'New column name', d:'結果列の名前。'},
+      {f:'Replace column', d:'ONにすると既存列を上書き。'},
+    ],
+    example:{ title:'金額ランクを付ける場合', code:'ルール:\n  $金額$ >= 100000 => "S"\n  $金額$ >= 50000  => "A"\n  $金額$ >= 10000  => "B"\n  DEFAULT          => "C"\n\nNew column name: ランク\n\n→ 金額100000以上: ランク=S\n→ 金額50000以上: ランク=A（100000未満）\n→ ...', note:'ルールは上から順に評価され、最初にマッチした時点で評価を止めます。条件の順番に注意してください。' },
+    tips:['複数列の組み合わせ条件も AND / OR で記述できる','文字列一致は LIKE "東京*" で前方一致、LIKE "*東京*" で部分一致'] },
+
+  { id:'string-replacer', name:'String Replacer', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'列内の文字列を別の文字列に置換します。正規表現にも対応。String Manipulationより設定が簡単です。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'「Search string」と「Replacement」を指定するだけで動作します。',
+    config:[
+      {f:'Target column', d:'置換対象の列名。'},
+      {f:'Search string', d:'検索する文字列または正規表現パターン。'},
+      {f:'Replacement', d:'置換後の文字列。正規表現グループは $1 $2 で参照。'},
+      {f:'Regular expression', d:'正規表現を使う場合はON。'},
+    ],
+    example:{ title:'電話番号のハイフンを除去する場合', code:'Target column: 電話番号\nSearch string: -\nReplacement: （空白）\nRegular expression: ☐ OFF\n\n例: 03-1234-5678 → 0312345678\n\n▼ 正規表現で先頭の0を除去する例:\nSearch: ^0\nReplacement: +81\nRegular expression: ✅ ON', note:'文字列全体が検索パターンと一致する必要はありません。パターンが含まれる部分を置換します。' },
+    tips:['単純な置換はString Replacerが最もシンプル','複数パターンを一括変換したい場合はCell Replacerが便利'] },
+
+  { id:'string-to-number', name:'String To Number', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'文字列型の列を数値型（Integer / Double）に変換します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'変換できない値（空白や文字が混じった値）の扱いを設定できます。',
+    config:[
+      {f:'Include（変換対象列）', d:'数値に変換したい文字列列をIncludeに移動。'},
+      {f:'Decimal separator', d:'小数点文字。「.」（ドット）または「,」（カンマ）。'},
+      {f:'Thousands separator', d:'桁区切り文字。「,」など。「1,000」を1000に変換する場合に設定。'},
+      {f:'On error', d:'変換エラー時の処理。「Set to missing」= 欠損値にする（推奨）、「Abort」= 処理停止。'},
+    ],
+    example:{ title:'Excelから読み込んだ金額列（文字列）を数値に変換する場合', code:'Include: 売上金額（String型）\nDecimal separator: .\nThousands separator: ,\nOn error: Set to missing\n\n例: "1,234,567" → 1234567（Double型）\n例: "N/A" → Missing Value（エラー行）', note:'変換後にMissing Valueが増えていないか確認してください。Statistics ノードでMissing count列をチェックするのが確実です。' },
+    tips:['逆はNumber To Stringノード','カンマ区切りの数字はThousands separatorに「,」を設定'] },
+
+  { id:'cell-type-changer', name:'Cell Type Changer', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'列のデータ型を変換します。String To Number / Number To Stringより汎用的で多くの型変換に対応します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'ドロップダウンから変換元・変換先の型を選択するだけで動作します。',
+    config:[
+      {f:'列リストと変換先の型', d:'各列に対して変換先のデータ型（String / Integer / Double / Boolean / Date&Time等）を選択する。'},
+    ],
+    example:{ title:'複数列を一度に型変換する場合', code:'列名     元の型      → 変換後の型\n年齢     String      → Integer\n売上     String      → Double\nフラグ   Integer     → Boolean\n日付     String      → LocalDate\n\n→ 4列を一度に変換できる', note:'String To Number と違い型変換エラー時のハンドリングが少ないため、事前にデータ品質を確認してから使ってください。' },
+    tips:['String To Number / Number To StringはCell Type Changerの特化版','Boolean変換は 0=false, 0以外=true として変換される'] },
+
+  { id:'datetime-to-string', name:'Date&Time to String', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'日時型（Date / Time / DateTime）を指定フォーマットの文字列に変換します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'Javaの日時フォーマット記法（yyyy-MM-dd など）でフォーマットを指定します。',
+    config:[
+      {f:'Include（変換対象列）', d:'文字列に変換したい日時列をIncludeに移動。'},
+      {f:'Date format', d:'出力フォーマット。yyyy=年, MM=月, dd=日, HH=時, mm=分, ss=秒。'},
+      {f:'Locale', d:'月名などの言語。日本語出力する場合は ja_JP を選択。'},
+    ],
+    example:{ title:'日時列を日本語形式の文字列にする場合', code:'Include: 売上日時（DateTime型）\nDate format: yyyy年MM月dd日 HH:mm\n\n→ 2024-03-15T09:30:00 → "2024年03月15日 09:30"\n\n▼ よく使うフォーマット:\nyyyy-MM-dd         → 2024-03-15\nMM/dd/yyyy         → 03/15/2024\nyyyyMMdd           → 20240315\nyyyy年MM月dd日     → 2024年03月15日', note:'逆変換（文字列→日時）はString to Date&Timeノードを使います。' },
+    tips:['フォーマット文字列はJavaのSimpleDateFormat規則に準拠','タイムゾーンが重要な場合はzoneId引数で明示指定'] },
+
+  { id:'string-to-datetime', name:'String to Date&Time', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'文字列型の日付・日時をDate&Time型に変換します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'元の文字列フォーマットを指定してパースします。フォーマットが一致しない場合はMissing Valueになります。',
+    config:[
+      {f:'Include（変換対象列）', d:'変換したい文字列列をIncludeに移動。'},
+      {f:'Date format', d:'入力文字列のフォーマット。例: yyyy-MM-dd / dd/MM/yyyy / yyyyMMdd'},
+      {f:'Locale', d:'曜日・月名の言語設定。英語形式（en_US）が一般的。'},
+      {f:'Type', d:'出力型の選択。Date only / Time only / Date and Time / Zoned Date Time。'},
+    ],
+    example:{ title:'「20240315」形式の文字列を日付型に変換する場合', code:'Include: 売上日（String型）\nDate format: yyyyMMdd\nType: Date only\n\n例: "20240315" → 2024-03-15（LocalDate型）\n\n▼ よくあるフォーマット指定:\n"2024/03/15" → yyyy/MM/dd\n"2024-03-15 09:30" → yyyy-MM-dd HH:mm\n"15-Mar-2024" → dd-MMM-yyyy (en_US)', note:'変換できない値はMissing Valueになります。Missing値が増えた場合はフォーマット文字列を見直してください。' },
+    tips:['入力データにフォーマットが混在する場合はRule EngineやString Manipulationで統一してから変換する'] },
+
+  { id:'extract-datetime', name:'Extract Date&Time Fields', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'日時型から年・月・日・曜日・時・分などの個別フィールドを抽出して新しい列として追加します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'チェックボックスで抽出するフィールドを選択します。',
+    config:[
+      {f:'Date&Time column', d:'抽出元の日時列を選択。'},
+      {f:'抽出フィールド', d:'Year / Month / Day / Hour / Minute / Second / Day of week / Day of year / Week of year などをチェックで選択。'},
+    ],
+    example:{ title:'売上日時から年・月・曜日を抽出する場合', code:'Column: 売上日時\n抽出チェック:\n  ✅ Year（年）\n  ✅ Month（月）\n  ✅ Day of week（曜日）\n\n→ 新列が追加される:\n  Year: 2024\n  Month: 3\n  Day of week: FRIDAY', note:'GroupByと組み合わせて「月別集計」「曜日別集計」などの時系列分析が簡単に行えます。' },
+    tips:['曜日別売上分析はDay of week + GroupByの組み合わせが定番','四半期を出すには Math Formula で ceiling($Month$/3) を計算'] },
+
+  { id:'row-id', name:'RowID', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'行IDを操作します。連番IDの振り直し・列への変換・列から行IDへの設定が可能。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'ループ処理後の行ID重複を解消したり、行IDを通常の列として使いたい場合に必須のノードです。',
+    config:[
+      {f:'Replace RowID', d:'新しいRowIDの生成方法。連番（Row1, Row2...）/ 既存列の値を使う / カスタムプレフィックス+連番。'},
+      {f:'Append column', d:'現在のRowIDを通常の列として追加する場合はONにして列名を入力。'},
+    ],
+    example:{ title:'ループ処理後の行IDを連番に振り直す場合', code:'Replace RowID: ✅ ON\n  New RowID: Row (sequential)\n  Prefix: Row_\n\n→ RowID重複エラーを解消できる\n\n▼ 既存列をRowIDにする場合:\n  Replace RowID: ✅ ON\n  Use values from column: customer_id', note:'RowIDは「Row0」「Row1」...のような文字列です。CSVに出力すると1列目として書き出されます。' },
+    tips:['RowIDをソートキーとして使うことはできないのでSorterで別列を使う','ループ後のDuplicate RowIDエラーはこのノードで解決できる'] },
+
+  { id:'transpose', name:'Transpose', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'テーブルの行と列を入れ替えます（転置）。列名が行データになり、行データが列名になります。',
+    ports:{ in:['データテーブル'], out:['転置テーブル'] },
+    detail:'RowIDが列ヘッダになります。元の列名はRowID列として出力されます。',
+    config:[
+      {f:'（設定なし）', d:'接続するだけで行と列を入れ替えます。列数・行数の大きなテーブルには時間がかかります。'},
+    ],
+    example:{ title:'特徴量重要度テーブルを見やすく転置する場合', code:'転置前:\n  Feature    | Importance\n  age        | 0.32\n  income     | 0.28\n  region     | 0.18\n\n転置後:\n  RowID      | Row0  | Row1   | Row2\n  age        | 0.32  | ...', note:'転置後の列名はRow0, Row1...となるため、Column Renameで適切な名前に変更してください。' },
+    tips:['元の列名を残したい場合はAppend column with RowIDオプションを活用','大きなテーブルの転置は列数×行数の積だけメモリを使うので注意'] },
+
+  { id:'column-combiner', name:'Column Combiner', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'複数の列の値を指定した区切り文字で結合して1つの新しい列を作成します。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'String Manipulationのjoin()より設定が直感的で、多数の列を一度に結合できます。',
+    config:[
+      {f:'Include columns', d:'結合する列をIncludeに追加。順番が出力順になる。'},
+      {f:'Delimiter', d:'区切り文字。例: 半角スペース「 」、カンマ「,」、アンダーバー「_」'},
+      {f:'New column name', d:'結合結果の列名。'},
+      {f:'Delete included columns', d:'ONにすると結合に使った元列を削除する。'},
+    ],
+    example:{ title:'都道府県と市区町村を結合して住所列を作る場合', code:'Include columns: 都道府県, 市区町村, 番地\nDelimiter: （空白 = 半角スペース）\nNew column name: 住所\nDelete included columns: ☐ OFF\n\n→ "東京都" + " " + "港区" + " " + "1-1-1"\n   = "東京都 港区 1-1-1"', note:'欠損値（Missing）が含まれる列は空文字として結合されます。欠損値対策はMissing Valueノードで先に処理してください。' },
+    tips:['逆変換（1列→複数列に分割）はCell Splitterノード','String Manipulationのjoin()より直感的だが複雑な条件には対応できない'] },
+
+  { id:'number-rounder', name:'Number Rounder', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'数値列を指定した精度で丸めます。小数点以下の桁数を統一したい場合に使います。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'四捨五入・切り上げ・切り捨てと、丸める桁数を設定できます。',
+    config:[
+      {f:'Include（対象列）', d:'丸めたい数値列をIncludeに移動。'},
+      {f:'Precision', d:'有効桁数または小数点以下桁数。例: 2 → 小数第2位まで保持。'},
+      {f:'Rounding mode', d:'HALF_UP（四捨五入）/ CEILING（切り上げ）/ FLOOR（切り捨て）/ HALF_EVEN（銀行丸め）'},
+    ],
+    example:{ title:'割引率計算結果を小数第2位に丸める場合', code:'Include: 割引率, 粗利率\nPrecision: 2\nRounding mode: HALF_UP（四捨五入）\n\n例: 0.33333... → 0.33\n例: 0.56789   → 0.57', note:'金融計算ではHALF_EVEN（銀行丸め）が使われることがあります。業務ルールに合った丸め方を選択してください。' },
+    tips:['整数に丸める場合はPrecision=0','Math FormulaのroundやfloorでもOKだが、Number Rounderは複数列を一括処理できる'] },
+
+  { id:'cell-splitter', name:'Cell Splitter', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'1つの列の値を区切り文字で複数列に分割します。Column Combinerの逆操作です。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'カンマ区切りやスペース区切りのデータを個別の列に分割します。',
+    config:[
+      {f:'Target column', d:'分割対象の列名。'},
+      {f:'Delimiter', d:'区切り文字。カンマ「,」、スペース「 」、タブ「\\t」など。'},
+      {f:'Split mode', d:'分割モード。Into columns（指定列数に分割）/ Into list column（リスト型列に変換）。'},
+      {f:'Number of new columns', d:'Into columnsモード時の分割先列数。'},
+    ],
+    example:{ title:'「東京都,港区,1-1-1」を都道府県・市区町村・番地に分割する場合', code:'Target column: 住所\nDelimiter: ,\nSplit mode: Into columns\nNumber of new columns: 3\n\n→ 住所_1: "東京都"\n→ 住所_2: "港区"\n→ 住所_3: "1-1-1"', note:'分割後の列名は「元列名_1, _2...」になります。Column Renameで適切な名前に変更してください。' },
+    tips:['区切り文字が複数種類混在する場合は正規表現モードを使う','Into list columnを使うと後でUnrollで縦展開できる'] },
+
+  { id:'lag-column', name:'Lag Column', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'列を指定した行数分ずらした（ラグ）新しい列を作成します。時系列分析の差分計算に使います。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'ソート済みのテーブルに対して使います。事前にSorterで時系列順に並べておく必要があります。',
+    config:[
+      {f:'Column to lag', d:'ラグを取りたい列名。'},
+      {f:'Lag', d:'ずらす行数。1なら1行前の値、-1なら1行後の値。'},
+      {f:'New column name', d:'ラグ列の名前。例: 前日売上, 前月在庫'},
+    ],
+    example:{ title:'前日売上との差分（日次変化）を計算する場合', code:'ソート前提: Sorterで日付列を昇順に並べておく\n\nColumn to lag: 売上金額\nLag: 1\nNew column name: 前日売上\n\n→ 続けてMath Formulaで:\n   $売上金額$ - $前日売上$\n   → 日次変化量を計算できる', note:'1行目はラグ値がないためMissing Valueになります。Row Filterで先頭行を除外するか、Missing Valueで0を補完してください。' },
+    tips:['Moving Aggregationと組み合わせて移動平均ベースの異常検知ができる','グループ別のラグが必要な場合はGroupLoopとの組み合わせが必要'] },
+
+  // ==================== 追加 Filter ====================
+  { id:'rule-based-row-filter', name:'Rule-Based Row Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'複数条件をルール形式で記述してフィルタします。ANDとORを組み合わせた複雑な条件に対応。',
+    ports:{ in:['データテーブル'], out:['マッチした行','マッチしない行'] },
+    detail:'Rule Engineと同様のルール文法でフィルタ条件を記述します。',
+    config:[
+      {f:'ルール記述欄', d:'TRUE（残す）またはFALSE（除く）を返す条件を記述。\n例: $金額$ > 10000 AND $region$ LIKE "東京*" => TRUE'},
+      {f:'Include/Exclude', d:'TRUEの行を残すか除くかを選択。'},
+    ],
+    example:{ title:'東京都かつ金額1万円以上の行だけ残す場合', code:'ルール:\n  $region$ LIKE "東京*" AND $金額$ >= 10000 => TRUE\n  TRUE => FALSE\n\n→ 上の出力ポート: 東京かつ1万円以上の行\n→ 下の出力ポート: それ以外の行', note:'Row Filterは1条件のみですが、Rule-Based Row Filterは複数条件を組み合わせられます。' },
+    tips:['LIKE演算子で前方一致や部分一致ができる','IN ["A", "B", "C"] で複数値のいずれかに一致する条件が書ける'] },
+
+  { id:'topk-row-filter', name:'Top-k Row Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'指定した列の値で上位k件（または下位k件）を抽出します。ランキング取得に便利。',
+    ports:{ in:['データテーブル'], out:['上位k行','残りの行'] },
+    detail:'ソートと上位k件取得を同時に行います。事前にSorterを使う必要はありません。',
+    config:[
+      {f:'Number of rows (k)', d:'取得する行数。'},
+      {f:'Selection column', d:'ランキングの基準となる列。'},
+      {f:'Order', d:'Descending（降順=大きい順）/ Ascending（昇順=小さい順）。'},
+    ],
+    example:{ title:'売上上位10店舗を抽出する場合', code:'Number of rows: 10\nSelection column: 売上金額\nOrder: Descending（大きい順）\n\n→ 上の出力ポート: 売上上位10店舗\n→ 下の出力ポート: 11位以下の店舗', note:'同点の場合は元のテーブルの行順が優先されます。厳密な同点処理が必要な場合はSorter + Row Filter（行番号範囲指定）を使ってください。' },
+    tips:['Sorter + Row Filterの組み合わせより簡潔に書ける','最低値下位10件はOrder: Ascendingで取得'] },
+
+  { id:'reference-row-filter', name:'Reference Row Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'参照テーブルに存在する値を持つ行だけを残します（または除きます）。マスタとの突合フィルタに使います。',
+    ports:{ in:['データテーブル','参照テーブル'], out:['マッチした行','マッチしない行'] },
+    detail:'Joinerより軽量で、参照テーブルの列を出力に追加せずフィルタのみ行います。',
+    config:[
+      {f:'Data column', d:'フィルタ対象のデータテーブル側の列名。'},
+      {f:'Reference column', d:'参照テーブル側の照合列名。'},
+      {f:'Include/Exclude', d:'参照テーブルに存在する行を残す（Include）か除く（Exclude）か。'},
+    ],
+    example:{ title:'有効顧客マスタに存在する顧客のみ残す場合', code:'データ（上ポート）: 売上テーブル（customer_id列あり）\n参照（下ポート）: 有効顧客マスタ（cust_id列）\n\nData column: customer_id\nReference column: cust_id\nInclude rows: 参照テーブルに存在する行のみ残す\n\n→ 有効顧客マスタに存在するcustomer_idの売上行だけが残る', note:'Joinerと異なり、参照テーブルの列は出力に追加されません。列を追加したい場合はJoinerを使ってください。' },
+    tips:['ブラックリストとの突合（除外フィルタ）はExcludeモードで実現','参照テーブルのキーが重複していても問題なく動作する（Joinerと異なる点）'] },
+
+  { id:'constant-column-filter', name:'Constant Value Column Filter', cat:'filter', badge:'フィルタ', badgeCls:'badge-filter',
+    desc:'すべての行で同じ値（定数）しか持たない列を自動検出して除去します。特徴量エンジニアリングの前処理として有用。',
+    ports:{ in:['データテーブル'], out:['フィルタ後テーブル','除去された列テーブル'] },
+    detail:'機械学習モデルで全行同一値の列は予測に寄与しないため、事前に除去します。',
+    config:[
+      {f:'（設定なし）', d:'接続するだけで定数列を自動検出して除去します。'},
+    ],
+    example:{ title:'機械学習の前処理として使う場合', code:'例えば以下のような列が自動除去される:\n  country: "Japan"（全行同じ）\n  version: "1.0"（全行同じ）\n  active: 1（全行同じ）\n\n→ これらはモデルに何も情報を与えないため除去が適切', note:'欠損値だらけの列は定数ではないため除去されません。欠損値列の除去にはColumn Filterと統計チェックを組み合わせてください。' },
+    tips:['Feature Selectionの第一歩として使う','除去された列は2番目の出力ポートで確認できる'] },
+
+  // ==================== 追加 Join ====================
+  { id:'column-appender', name:'Column Appender', cat:'join', badge:'結合', badgeCls:'badge-join',
+    desc:'2つのテーブルを横方向に連結します。両テーブルの行数が同じ場合に使います（キー不要）。',
+    ports:{ in:['テーブル1','テーブル2'], out:['横連結テーブル'] },
+    detail:'行数が一致していることが前提です。行番号順に対応付けて列を横に並べます。',
+    config:[
+      {f:'（設定なし）', d:'接続するだけで横連結します。両テーブルの行数が一致していることを確認してください。'},
+    ],
+    example:{ title:'同じ顧客リストに属性テーブルを横連結する場合', code:'テーブル1（100行）: customer_id, name\nテーブル2（100行）: age, region\n（両方同じ順序でソート済み）\n\n→ 出力（100行）:\n  customer_id | name | age | region', note:'行の対応は行番号で行われます。顧客IDが一致していない場合に誤った組み合わせになります。必ず同じキー順にSorterで整列してから使ってください。' },
+    tips:['キーで確実に対応させるにはJoinerを使う','Column AppenderはキーなしでもOKだが行順が正しいことが前提'] },
+
+  { id:'reference-row-splitter', name:'Reference Row Splitter', cat:'join', badge:'結合', badgeCls:'badge-join',
+    desc:'参照テーブルに存在する行と存在しない行に分岐します。Reference Row Filterの2出力バージョン。',
+    ports:{ in:['データテーブル','参照テーブル'], out:['マッチした行','マッチしない行'] },
+    detail:'Reference Row Filterと機能は同じですが、2つの出力ポートで「一致」と「不一致」を同時に処理できます。',
+    config:[
+      {f:'Data column', d:'照合するデータテーブル側の列。'},
+      {f:'Reference column', d:'照合する参照テーブル側の列。'},
+    ],
+    example:{ title:'既存顧客と新規顧客に分岐する場合', code:'Data column: customer_id\nReference column: existing_cust_id\n\n→ 上の出力: 既存顧客の行（マスタに存在）\n→ 下の出力: 新規顧客の行（マスタに存在しない）\n→ それぞれ別の処理フローに接続', note:'Reference Row Filterと同じ設定ですが、2つの出力を使うことでIF分岐のような処理フローを構成できます。' },
+    tips:['既存/新規の分岐処理など、フロー分岐の起点として使うと可読性が高い'] },
+
+  // ==================== 追加 Aggregation ====================
+  { id:'value-counter', name:'Value Counter', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'列内の各ユニーク値の出現回数（頻度）をカウントします。カテゴリデータの分布確認に最適。',
+    ports:{ in:['データテーブル'], out:['頻度テーブル'] },
+    detail:'GroupBy + Countの簡易版として使えます。1列の集計に特化しています。',
+    config:[
+      {f:'Target column', d:'頻度をカウントする列名。'},
+      {f:'Sort by frequency', d:'頻度の降順でソートするかどうか。'},
+    ],
+    example:{ title:'都道府県別の顧客数を確認する場合', code:'Target column: 都道府県\nSort by frequency: ✅ ON（多い順）\n\n→ 出力:\n  都道府県 | Count\n  東京都   | 3842\n  大阪府   | 1923\n  愛知県   | 1245\n  ...', note:'データの分布確認（EDA）の最初のステップとして非常に便利です。カテゴリ列には必ず使ってみてください。' },
+    tips:['Statisticsノードで数値列の分布を確認、Value Counterでカテゴリ列の分布を確認するのがEDAの定番セット','異常に少ない値はデータ品質問題のサインかもしれない'] },
+
+  { id:'auto-binner', name:'Auto-Binner', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'数値列を自動的にビン（区間）に分割してカテゴリ列に変換します。年齢層・金額帯などの作成に使います。',
+    ports:{ in:['データテーブル'], out:['ビン化テーブル','ビン定義テーブル'] },
+    detail:'等幅・等頻度などのビニング方法を指定します。',
+    config:[
+      {f:'Target column', d:'ビニングする数値列。'},
+      {f:'Binning method', d:'Equal width（等幅）: 範囲を等分割 / Equal frequency（等頻度）: データ数が均等になるよう分割 / Fixed（手動）: 境界値を手動設定。'},
+      {f:'Number of bins', d:'分割数。'},
+      {f:'Bin naming', d:'ビンの名前付け方法。Numbered（0,1,2...）/ Intervals（[0-10),[10-20)...）など。'},
+    ],
+    example:{ title:'年齢を10歳ごとの年齢層に変換する場合', code:'Target column: 年齢\nBinning method: Equal width\nNumber of bins: 7\n（0-10, 10-20, 20-30, 30-40, 40-50, 50-60, 60+）\n\nBin naming: Intervals\n\n→ 年齢列が "30-40" などのカテゴリ文字列列になる', note:'等頻度（Equal frequency）は各ビンにデータが均等に入りますが、解釈しやすさは等幅（Equal width）の方が高いです。' },
+    tips:['境界値を手動で細かく指定したい場合はNumeric Binnerノードを使う','GroupByと組み合わせてビン別集計ができる'] },
+
+  { id:'moving-aggregation', name:'Moving Aggregation', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'指定したウィンドウサイズで移動集計（移動平均・移動合計など）を計算します。時系列の平滑化に使います。',
+    ports:{ in:['データテーブル'], out:['データテーブル'] },
+    detail:'Sorterで時系列順に並べてから使います。ウィンドウ幅と集計方法を設定します。',
+    config:[
+      {f:'Aggregation column', d:'移動集計する数値列。'},
+      {f:'Aggregation method', d:'Mean（移動平均）/ Sum（移動合計）/ Max / Min / Std. deviation など。'},
+      {f:'Window size', d:'集計に使う行数（ウィンドウ幅）。例: 7 なら7日移動平均。'},
+      {f:'Window type', d:'Backward（過去N行）/ Center（前後N行）/ Forward（未来N行）。'},
+    ],
+    example:{ title:'日次売上の7日移動平均を計算する場合', code:'事前: Sorterで日付列の昇順に並べる\n\nAggregation column: 売上金額\nAggregation method: Mean\nWindow size: 7\nWindow type: Backward（過去7日間）\n\n→ 新列: 売上金額_Moving_Average が追加される\n→ 週次トレンドの視覚化や異常値検出に活用', note:'最初のN-1行はウィンドウが揃わないためMissing Valueになります。' },
+    tips:['時系列データの前処理として外れ値の影響を低減するのに有効','Lag Columnと組み合わせてより高度な特徴量エンジニアリングが可能'] },
+
+  { id:'rank', name:'Rank', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'指定した列の値に対して順位（ランク）を付与した列を追加します。',
+    ports:{ in:['データテーブル'], out:['順位付きテーブル'] },
+    detail:'昇順・降順でのランク付けと、同順位の扱い方を設定できます。',
+    config:[
+      {f:'Rank column', d:'ランクを付ける基準の列。'},
+      {f:'Rank mode', d:'Ordinal（すべて異なる順位）/ Standard（同値は同順位で次を飛ばす）/ Dense（同値は同順位で次は連続）/ Fractional（平均順位）'},
+      {f:'Order', d:'Ascending（小→大順）/ Descending（大→小順）。'},
+      {f:'Group columns', d:'グループ内でランク付けする場合に指定（例: 店舗コードでグループ化してランク付け）。'},
+    ],
+    example:{ title:'売上金額の全社ランキングを付ける場合', code:'Rank column: 売上金額\nRank mode: Standard（同点は同順位、次を飛ばす）\nOrder: Descending（大きい順が1位）\n\n→ 売上金額列に「Rank」列が追加される\n→ 1位: 最高売上、同率は同じ順位\n\n▼ 店舗別のランキング:\n  Group columns: 店舗コード', note:'Top-k Row Filterでランク上位N件だけ残すといった後処理と組み合わせると便利です。' },
+    tips:['グループ内ランキングはGroup columns設定で実現','Dense rankはSQLのDENSE_RANK()に相当'] },
+
+  { id:'numeric-binner', name:'Numeric Binner', cat:'agg', badge:'集計', badgeCls:'badge-agg',
+    desc:'数値列を手動で指定した境界値でビン分割します。業務定義に基づいた区分けに使います。',
+    ports:{ in:['データテーブル'], out:['ビン化テーブル'] },
+    detail:'境界値を手動入力するため、業務ロジックに合った区分けができます。',
+    config:[
+      {f:'Target column', d:'ビニングする数値列。'},
+      {f:'Bin定義（Add bins）', d:'境界値と各ビンの名前を手動で設定。例: [0, 1000) = "低", [1000, 5000) = "中", [5000, ∞) = "高"'},
+      {f:'Include/Exclude left bound', d:'境界値を含む（≤）か含まない（<）かを設定。'},
+    ],
+    example:{ title:'売上金額を「低・中・高」に分類する場合', code:'Target column: 売上金額\nBin定義:\n  0    ≤ x < 10000  → "低"\n  10000 ≤ x < 50000 → "中"\n  50000 ≤ x < ∞     → "高"\n\n→ 売上金額列が "低"/"中"/"高" に置き換えられる', note:'Auto-Binnerは自動で境界値を決めますが、Numeric Binnerは業務定義（例: 閾値が1万円と5万円と決まっている）に合わせて手動設定できます。' },
+    tips:['Rule Engineでも同様のことはできるが、Numeric Binnerの方が数値ビニングに特化していて設定がシンプル'] },
+
+  // ==================== 追加 ML ====================
+  { id:'partitioning', name:'Partitioning', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'テーブルを学習用とテスト用（または任意の2セット）に分割します。機械学習の前処理として必須。',
+    ports:{ in:['データテーブル'], out:['上側テーブル','下側テーブル'] },
+    detail:'比率・件数・ストラタムサンプリングで分割できます。乱数シードを設定すると再現性が確保できます。',
+    config:[
+      {f:'Relative / Absolute', d:'割合（例: 70%）または件数（例: 1000件）で分割サイズを指定。'},
+      {f:'Sampling method', d:'Random（ランダム）/ Stratified（層別）/ First rows（先頭行）/ Last rows（末尾行）'},
+      {f:'Class column（Stratified時）', d:'層別サンプリング時のターゲット列。クラスの比率を保ちながら分割する。'},
+      {f:'Random seed', d:'再現性を確保するための乱数シード。同じシードなら毎回同じ分割になる。'},
+    ],
+    example:{ title:'学習:テスト=7:3でランダム分割する場合', code:'Relative size of top partition: 70%\nSampling method: Stratified sampling\nClass column: 購入フラグ（クラス比率を保つため）\nRandom seed: 12345（固定して再現性確保）\n\n→ 上の出力: 学習データ（70%）\n→ 下の出力: テストデータ（30%）', note:'Stratifiedを使うと、学習・テストの両方でクラス比率が元データと同じになります。不均衡データでは特に重要です。' },
+    tips:['クロスバリデーションにはX-Partitioner / X-Aggregatorを使う','テストデータは学習が完全に終わるまで使わないことが鉄則'] },
+
+  { id:'random-forest-learner', name:'Random Forest Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'ランダムフォレストモデルを学習します。決定木より過学習しにくく高精度な分類・回帰に対応。',
+    ports:{ in:['学習データ'], out:['ランダムフォレストモデル'] },
+    detail:'多数の決定木をアンサンブルすることで安定した予測精度を実現します。',
+    config:[
+      {f:'Target column', d:'予測対象のターゲット列（分類: カテゴリ列、回帰: 数値列）。'},
+      {f:'Number of models', d:'生成する決定木の本数。多いほど安定するが学習時間が増加。通常100〜500。'},
+      {f:'Max tree depth', d:'各木の最大深さ。Unlimited（制限なし）でもOKだが制限すると速くなる。'},
+      {f:'Feature sampling', d:'各木で使用する特徴量のサンプリング比率。通常はsqrt（特徴量数の平方根）。'},
+    ],
+    example:{ title:'顧客購入予測モデルを学習する場合', code:'Target column: 購入フラグ（Yes/No）\nNumber of models: 100\nMax tree depth: Unlimited\nFeature sampling: sqrt\nRandom seed: 42\n\n→ Decision Treeより精度が高く\n   過学習もしにくい\n→ Feature Importanceで重要な特徴量が確認できる', note:'学習時間はDecision Treeより長いですが、通常は大幅に精度が向上します。まずはパラメータデフォルトのまま試してみてください。' },
+    tips:['Feature Importanceノードと組み合わせると重要な特徴量がわかる','予測はRandom Forest Predictorノードで実行'] },
+
+  { id:'random-forest-predictor', name:'Random Forest Predictor', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'学習済みランダムフォレストモデルを使って新データに予測を行います。',
+    ports:{ in:['ランダムフォレストモデル','予測対象データ'], out:['予測結果テーブル'] },
+    detail:'分類モデルは予測クラス+確率列、回帰モデルは予測値列が追加されます。',
+    config:[
+      {f:'Append columns with class probabilities', d:'各クラスの予測確率列を追加する場合はON。'},
+      {f:'Prediction column name', d:'予測結果列の列名（デフォルト: Prediction (列名)）。'},
+    ],
+    example:{ title:'学習済みモデルで新規顧客の購入確率を予測する場合', code:'入力1: Random Forest Learnerのモデル出力\n入力2: 新規顧客テーブル（同じ特徴量列が必要）\n\nAppend class probabilities: ✅ ON\n\n→ 出力列:\n  Prediction: "Yes"/"No"\n  P(Yes): 0.82（購入確率82%）\n  P(No): 0.18', note:'予測に使う特徴量列の名前・型が学習データと完全に一致している必要があります。一致しない場合はExecute failedエラーになります。' },
+    tips:['確率値を使った閾値調整でPrecision/Recallのバランスを調整できる'] },
+
+  { id:'logistic-regression-learner', name:'Logistic Regression Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'ロジスティック回帰モデルを学習します。2値分類（バイナリ分類）に最もよく使われる線形モデルです。',
+    ports:{ in:['学習データ'], out:['ロジスティック回帰モデル'] },
+    detail:'解釈しやすく、各特徴量の係数（重み）からビジネス的な洞察が得やすいモデルです。',
+    config:[
+      {f:'Target column', d:'予測対象の2値カテゴリ列（例: 購入/非購入）。'},
+      {f:'Solver', d:'最適化アルゴリズム。IRLS（デフォルト）が一般的。'},
+      {f:'Max iterations', d:'最大反復回数。デフォルトの100で通常収束。'},
+    ],
+    example:{ title:'メール開封の有無を予測する場合', code:'Target column: 開封フラグ（Yes/No）\nSolver: IRLS\nMax iterations: 100\n\n→ 各特徴量の係数がモデル出力に含まれる\n→ 係数が正 = その特徴量が開封を増やす方向\n→ 係数が負 = その特徴量が開封を減らす方向', note:'ロジスティック回帰は特徴量のスケールに敏感です。事前にNormalizerで標準化することを推奨します。' },
+    tips:['線形モデルなので特徴量同士の交互作用はなし（必要なら手動で積の列を作る）','係数の解釈でどの特徴量が予測に重要かわかる'] },
+
+  { id:'logistic-regression-predictor', name:'Logistic Regression Predictor', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'学習済みロジスティック回帰モデルを使って予測を行います。',
+    ports:{ in:['ロジスティック回帰モデル','予測対象データ'], out:['予測結果テーブル'] },
+    detail:'予測クラスと予測確率列が追加されます。',
+    config:[
+      {f:'Append columns with class probabilities', d:'確率列を追加する場合はON。'},
+    ],
+    example:{ title:'新規メール送信先に開封確率を予測する場合', code:'→ 出力列:\n  Prediction: "Yes"/"No"\n  P(Yes): 0.67（開封確率67%）\n  P(No): 0.33\n\n→ P(Yes) > 0.5 の顧客に優先送信するなどの活用が可能', note:'Decision Tree Predictorと同じ使い方です。入力モデルをLogistic Regression Learnerからの出力に変えるだけです。' },
+    tips:['確率が0.5に近い予測は信頼性が低い。高確率のものを優先して活用する'] },
+
+  { id:'linear-regression-learner', name:'Linear Regression Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'線形回帰モデルを学習します。数値の予測（価格予測・需要予測など）に使います。',
+    ports:{ in:['学習データ'], out:['線形回帰モデル','係数テーブル'] },
+    detail:'最も解釈しやすい回帰モデルです。係数テーブルでどの特徴量が予測値にどれだけ影響するかを確認できます。',
+    config:[
+      {f:'Target column', d:'予測対象の数値列（例: 売上金額, 在庫数）。'},
+      {f:'Feature columns', d:'予測に使う特徴量列。デフォルトは全数値列。'},
+      {f:'Include constant term', d:'切片（定数項）を含む場合はON（通常ON）。'},
+    ],
+    example:{ title:'広告費から売上を予測するモデルを作る場合', code:'Target column: 売上金額\nFeature columns: TV広告費, ネット広告費, 販促費\nInclude constant: ✅ ON\n\n→ 係数テーブル出力（例）:\n  切片: 500000\n  TV広告費: 8.3（1万円増やすと8.3万円売上増）\n  ネット広告費: 12.1\n  販促費: 5.6', note:'特徴量間の多重共線性がある場合（相関が高い特徴量が複数）は係数が不安定になります。VIF（分散拡大係数）で確認してください。' },
+    tips:['係数の解釈でビジネス的なインサイトが得られる','非線形関係には木系モデルやポリノミアル特徴量追加が必要'] },
+
+  { id:'linear-regression-predictor', name:'Linear Regression Predictor', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'学習済み線形回帰モデルを使って数値を予測します。',
+    ports:{ in:['線形回帰モデル','予測対象データ'], out:['予測結果テーブル'] },
+    detail:'予測値列が追加されます。実績値と比較するためにMAEやRMSEも計算できます。',
+    config:[
+      {f:'Prediction column name', d:'予測値列の列名（デフォルト: Prediction）。'},
+    ],
+    example:{ title:'翌月売上を予測する場合', code:'→ 出力列: Prediction（予測売上金額）\n\n→ 精度評価（Math Formulaで計算）:\n  RMSE = sqrt(mean(($実績$-$Prediction$)^2))\n  MAE  = mean(abs($実績$-$Prediction$))', note:'Numeric Scorerノードを使うと回帰モデルの評価指標（RMSE, MAE, R²）を自動で計算できます。' },
+    tips:['Numeric Scorerノードで回帰モデルの精度評価を行う'] },
+
+  { id:'pca', name:'PCA (Principal Component Analysis)', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'主成分分析を行い、多次元データを少ない次元に圧縮します。特徴量削減・可視化の前処理に使います。',
+    ports:{ in:['データテーブル'], out:['変換済みテーブル','固有ベクトルテーブル'] },
+    detail:'相関の高い特徴量群をまとめて情報損失を最小化しながら次元削減します。',
+    config:[
+      {f:'Target dimensions', d:'削減後の次元数。通常は分散説明率が80〜90%になる次元数を選ぶ。'},
+      {f:'Failed dimension handling', d:'次元数が特徴量数より多い場合の処理。'},
+    ],
+    example:{ title:'50特徴量を10次元に削減する場合', code:'事前: Normalizerで全特徴量を標準化\n\nTarget dimensions: 10\n\n→ PC1, PC2, ..., PC10の10列に変換される\n→ PC1が最も分散を説明する主成分\n\n▼ 分散説明率確認のコツ:\n  固有ベクトルテーブルの寄与率列を累積して\n  80〜90%になる次元数を選ぶ', note:'PCA後の主成分は元の特徴量との1対1対応がなくなり、解釈が難しくなります。解釈性が重要な業務では慎重に使ってください。' },
+    tips:['事前にNormalizerで標準化必須（スケールが揃っていないとPCAがうまく機能しない）','2次元に削減してScatter Plotで可視化するとクラスタ構造が見えやすい'] },
+
+  { id:'roc-curve', name:'ROC Curve', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'2値分類モデルのROC曲線とAUC（曲線下面積）を計算・可視化します。閾値によらない総合的な性能評価に使います。',
+    ports:{ in:['予測結果テーブル'], out:['AUCテーブル','ROC曲線テーブル'] },
+    detail:'AUCが1に近いほど良いモデルです。0.5はランダム予測と同等です。',
+    config:[
+      {f:'Positive class value', d:'正例クラスの値（例: "Yes", "1"）。'},
+      {f:'Probability column', d:'正例の予測確率列（例: P(Yes)）。'},
+      {f:'Class column', d:'正解ラベルの列。'},
+    ],
+    example:{ title:'購入予測モデルのROC-AUCを評価する場合', code:'Class column: 購入フラグ（正解）\nPositive class: "Yes"\nProbability column: P(Yes)（予測確率）\n\n→ AUC値（例: 0.87）が出力される\n  0.9以上: 優秀なモデル\n  0.8〜0.9: 良好なモデル\n  0.7〜0.8: まずまず\n  0.5〜0.7: 改善が必要\n  0.5: ランダム予測と同等', note:'Accuracyだけでなく必ずAUCも確認してください。不均衡データではAccuracyは高くてもAUCが低いことがあります。' },
+    tips:['AUC=0.5はランダム予測と同等なので改善が必要','ROC曲線はFalse Positive Rate と True Positive Rate のトレードオフを示す'] },
+
+  { id:'x-partitioner', name:'X-Partitioner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'クロスバリデーションのデータ分割を担当するノードです。X-Aggregatorと対で使います。',
+    ports:{ in:['データテーブル'], out:['学習データ','テストデータ'] },
+    detail:'K-Fold Cross Validationを実現します。ループと組み合わせて全K回の評価を自動実行します。',
+    config:[
+      {f:'Number of folds', d:'分割数（K）。通常5〜10。'},
+      {f:'Stratified sampling', d:'層別分割（クラス比率を保つ）する場合はON。分類問題では推奨。'},
+    ],
+    example:{ title:'5-Fold クロスバリデーションを行う場合', code:'Number of folds: 5\nStratified: ✅ ON\n\nワークフロー構成:\n  X-Partitioner\n    → Decision Tree Learner（学習ポート）\n    → Decision Tree Predictor + Scorer\n  X-Aggregator（評価結果の集約）\n\n→ 5回の平均Accuracyが最終評価値', note:'X-PartitionerとX-AggregatorはLoopではなく専用の「クロスバリデーションループ」を形成します。Loop EndではなくX-Aggregatorを使ってください。' },
+    tips:['X-PartitionerはLoop Startの代わり、X-AggregatorはLoop Endの代わりとして機能する'] },
+
+  { id:'gradient-boosted-trees', name:'Gradient Boosted Trees Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'勾配ブースティング木モデルを学習します。Random Forestと並ぶ高精度なアンサンブル手法です。',
+    ports:{ in:['学習データ'], out:['GBTモデル'] },
+    detail:'誤分類した事例を重点的に学習する逐次的アンサンブル手法です。',
+    config:[
+      {f:'Target column', d:'予測ターゲット列。分類・回帰両方に対応。'},
+      {f:'Number of models', d:'ブースティングのラウンド数。多すぎると過学習。通常50〜200。'},
+      {f:'Learning rate', d:'各ラウンドの学習率。小さいほど過学習しにくいが多くのラウンドが必要。通常0.1。'},
+      {f:'Max tree depth', d:'各弱学習器の最大深さ。通常3〜5の浅い木を使う。'},
+    ],
+    example:{ title:'精度重視の分類モデルを学習する場合', code:'Target column: 解約フラグ\nNumber of models: 100\nLearning rate: 0.1\nMax tree depth: 4\n\n→ Random Forestより高精度になることが多い\n→ ただし学習時間は長め', note:'過学習を防ぐためにPartitioningで検証データを用意し、検証AUCが改善しなくなったらラウンド数を減らしてください。' },
+    tips:['一般にRandom Forestより高精度だが過学習しやすい','XGBoostやLightGBMに相当するKNIMEの実装'] },
+
+  // ==================== 追加 Loop ====================
+  { id:'count-loop-start', name:'Count Loop Start', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'指定した回数だけ処理を繰り返します。ループ回数が固定の場合に最もシンプルに使えます。',
+    ports:{ in:[], out:['フロー変数'] },
+    detail:'現在の反復回数はフロー変数 $$LOOP_ITERATION$$ で取得できます（0始まり）。',
+    config:[
+      {f:'Iteration count', d:'繰り返す回数を整数で入力。'},
+    ],
+    example:{ title:'10回ランダムサンプリングして結果を集約する場合', code:'Iteration count: 10\n\n→ ループ内で:\n  Rowsampler（ランダムサンプリング）\n  → 何らかの集計処理\n\n→ Loop Endで10回分の結果を縦連結\n\n▼ 現在の反復回数を使う場合:\n  Math Formula等でフロー変数 $$LOOP_ITERATION$$ を参照\n  （0〜9 の値が入る）', note:'繰り返し回数を動的に変えたい場合はVariable Loop Startを使ってください。' },
+    tips:['最もシンプルなループ。ランダムサンプリングの複数回試行などに最適','$$LOOP_ITERATION$$ は0始まりなので注意'] },
+
+  { id:'recursive-loop-start', name:'Recursive Loop Start', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'前の反復結果を次の反復の入力として使えるループです。収束計算や段階的なデータ拡張に使います。',
+    ports:{ in:['初期テーブル'], out:['各反復の入力テーブル'] },
+    detail:'Recursive Loop Endと対で使います。各反復でLoop Endの出力が次のLoop Startの入力になります。',
+    config:[
+      {f:'Max iterations', d:'最大反復回数（無限ループ防止）。収束しない場合でもここで停止する。'},
+      {f:'Minimal number of rows', d:'入力テーブルの行数がこの値を下回ったら自動停止する条件。'},
+    ],
+    example:{ title:'データを段階的にフィルタして最終的な対象リストを絞り込む場合', code:'初期入力: 全顧客リスト（10000件）\n\nLoop内処理:\n  → 前回除外リストとのJoiner（Exclude）\n  → 条件に合わない顧客を除去\n  → Recursive Loop Endに残った顧客を渡す\n\n→ 各反復で顧客が減っていき\n   最小行数（例:100件）を下回ったら停止', note:'収束判定が難しい場合はMax iterationsを安全な上限（例:100）に設定してください。' },
+    tips:['必ずRecursive Loop Endと対で使う（Loop EndではなくRecursive Loop End）','グラフ探索や段階的フィルタなどに使われる上級ノード'] },
+
+  { id:'break-loop', name:'Break Loop', cat:'loop', badge:'ループ', badgeCls:'badge-loop',
+    desc:'条件に基づいてループを途中で強制終了します。特定の条件が満たされたらループを止めたい場合に使います。',
+    ports:{ in:['データテーブル（フロー変数あり）'], out:['データテーブル'] },
+    detail:'フロー変数の値がtrueになったときにループを終了します。IF Switchと組み合わせて使います。',
+    config:[
+      {f:'Break condition（フロー変数）', d:'ループ終了トリガーとなるBoolean型フロー変数名を指定。true になった時点でループを終了。'},
+    ],
+    example:{ title:'対象データがなくなったらループを終了する場合', code:'ループ内処理:\n  → Row Filter（条件に合う行を取得）\n  → Empty Table Switch（空ならBreakへ）\n    → Break Loop（空のときのみ通過）\n  → 通常処理\n\n→ 対象データが0件になった時点でループ終了', note:'EmptyTableSwitchと組み合わせて「空テーブルになったらBreak」のパターンが定番です。' },
+    tips:['Recursive Loopの収束判定などに使う','Loop Endには集約済みの結果が出力される（Breakしても集約は実行される）'] },
+
+  // ==================== Visualization（可視化）====================
+  { id:'line-plot', name:'Line Plot', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'折れ線グラフを作成します。時系列データのトレンド可視化に最適。インタラクティブに操作できます。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'X軸・Y軸の列を指定するだけでブラウザベースのインタラクティブグラフが生成されます。',
+    config:[
+      {f:'X column', d:'X軸の列（通常は日付・時刻・連番など）。'},
+      {f:'Y columns', d:'Y軸の列（複数選択で複数の折れ線を重ねられる）。'},
+      {f:'Title', d:'グラフのタイトル。'},
+    ],
+    example:{ title:'月別売上の推移グラフを作る場合', code:'X column: 売上月\nY columns: 売上金額, 前年売上（2本線を重ねる）\nTitle: 月別売上推移（前年比較）\n\n→ インタラクティブグラフが表示される\n→ ズーム・ホバー・凡例クリックで操作可', note:'ノードを実行後、右クリック→Open viewでグラフを表示できます。' },
+    tips:['ノード実行後に右クリック→"Open view"でグラフを表示','複数Y列を選ぶと比較折れ線グラフになる'] },
+
+  { id:'bar-chart', name:'Bar Chart', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'棒グラフを作成します。カテゴリ別の数値比較に最適。横棒・縦棒を切り替えられます。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'GroupByで集計済みのテーブルに対して使うのが一般的です。',
+    config:[
+      {f:'Category column', d:'カテゴリ軸（X軸）の列。例: 店舗名, 地域, 製品カテゴリ。'},
+      {f:'Aggregation column', d:'棒の高さを表す数値列。'},
+      {f:'Chart orientation', d:'Horizontal（横棒）/ Vertical（縦棒）。'},
+    ],
+    example:{ title:'店舗別売上の棒グラフを作る場合', code:'Category column: 店舗名\nAggregation column: 売上合計\nOrientation: Vertical（縦棒）\n\n→ GroupBy → Bar Chartの接続が定番\n\nGroupBy設定:\n  Groups: 店舗名\n  Aggregation: 売上金額 → Sum', note:'棒グラフはGroupByで集計してから接続するのが基本パターンです。' },
+    tips:['Sorterで降順ソートしてから接続するとランキング棒グラフになる','Top-k Row Filterで上位10件だけ表示するのも有効'] },
+
+  { id:'scatter-plot', name:'Scatter Plot', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'散布図を作成します。2変数の相関関係の可視化に最適。色でクラスタを表現できます。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'クラスタリング結果の確認や外れ値の視覚的確認によく使われます。',
+    config:[
+      {f:'X column', d:'X軸の数値列。'},
+      {f:'Y column', d:'Y軸の数値列。'},
+      {f:'Color column', d:'点の色分けに使う列（カテゴリ列を指定するとクラス別に色が変わる）。'},
+    ],
+    example:{ title:'K-Meansのクラスタリング結果を可視化する場合', code:'事前: PCAで2次元に削減するか、主要2特徴量を選択\n\nX column: PC1（第1主成分）\nY column: PC2（第2主成分）\nColor column: Cluster（クラスタラベル）\n\n→ クラスタの分布とまとまり具合が視覚的にわかる', note:'PCAで2次元に削減してからScatter Plotに接続するのが次元削減の効果確認の定番手法です。' },
+    tips:['外れ値の確認にも有効（分布から離れた点が一目でわかる）','Color columnを使うとクラス境界が視覚化できる'] },
+
+  { id:'box-plot', name:'Box Plot', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'箱ひげ図を作成します。データの分布・中央値・外れ値を同時に確認できます。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'複数のカテゴリ別に分布を比較する場合に特に便利です。',
+    config:[
+      {f:'Columns to plot', d:'箱ひげ図を描く数値列（複数選択可）。'},
+    ],
+    example:{ title:'部門別の給与分布を箱ひげ図で比較する場合', code:'Columns to plot: 給与\nGroup by: 部門名\n\n→ 各部門の:\n  中央値（中央の線）\n  四分位範囲（箱の高さ）\n  外れ値（点として表示）\n  が一目でわかる', note:'Statisticsノードの数値確認と組み合わせて使うと、分布の特徴（偏りや外れ値）を効率よく把握できます。' },
+    tips:['StatisticsとBox Plotの組み合わせがEDA（探索的データ分析）の定番','外れ値の多い列は機械学習の前に要対処'] },
+
+  { id:'histogram', name:'Histogram', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'ヒストグラムを作成します。数値データの分布形状（正規分布か歪んでいるかなど）を確認します。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'ビン幅を調整することで分布の粗さ・細かさを変えられます。',
+    config:[
+      {f:'Column', d:'ヒストグラムを描く数値列。'},
+      {f:'Number of bins', d:'ビン（棒）の数。少ないと粗い分布、多いと細かい分布。'},
+    ],
+    example:{ title:'売上金額の分布を確認する場合', code:'Column: 売上金額\nNumber of bins: 30\n\n→ 分布が:\n  正規分布に近い: 通常の回帰モデルが使いやすい\n  右に裾が長い: 対数変換を検討\n  二峰性: サブグループが存在する可能性', note:'特徴量エンジニアリングの前に各数値列のヒストグラムを確認するのがEDAの基本です。' },
+    tips:['対数スケールに変換するとべき乗則分布が見やすくなる','Auto-Binnerのビン数決定の参考にもなる'] },
+
+  { id:'table-view', name:'Table View', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'テーブルデータをインタラクティブに表示・確認します。ポートビューよりリッチな画面で閲覧できます。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'列のソート・フィルタ・検索がUI上でできます。データの中身を素早く確認するのに便利。',
+    config:[
+      {f:'Title', d:'ビューのタイトル。'},
+      {f:'Columns to display', d:'表示する列を絞り込める。'},
+    ],
+    example:{ title:'前処理結果を人が確認するステップを設ける場合', code:'前処理ノード群 → Table View\n\n→ ワークフロー実行後にTable Viewを開き\n  データの中身をビジネス担当者が確認\n\n→ 問題なければ後続ノードを実行\n（Webブラウザでインタラクティブに操作可能）', note:'品質確認ゲートとして処理パイプラインの中間に置くと、人によるデータ検証が容易になります。' },
+    tips:['中間確認ポイントとして処理の途中に挿入するのが定番の使い方','ポートビュー（右クリック）より列フィルタ・ソートがしやすい'] },
+
+  { id:'data-explorer', name:'Data Explorer', cat:'viz', badge:'可視化', badgeCls:'badge-viz',
+    desc:'テーブルの統計情報・分布・型をすべて一画面でまとめて確認できるEDAビューです。',
+    ports:{ in:['データテーブル'], out:[] },
+    detail:'統計量・ヒストグラム・欠損値情報・相関行列がまとめて表示されます。',
+    config:[
+      {f:'（設定なし）', d:'接続するだけで全列の統計情報を表示します。'},
+    ],
+    example:{ title:'新しいデータセットを受け取ったときの第一チェックとして使う場合', code:'CSV Reader → Data Explorer\n\n→ 一画面で確認できること:\n  ・各列のデータ型\n  ・欠損値の有無と割合\n  ・数値列の最小・最大・平均・標準偏差\n  ・カテゴリ列のユニーク値数\n  ・ヒストグラム（クリックで拡大）\n  ・列間の相関ヒートマップ', note:'データを受け取ったらまずData Explorerに通すことを習慣にすると、問題のある列を早期に発見できます。' },
+    tips:['EDAの最初のステップとして必ず使う','StatisticsノードとValue Counterを個別に使う代わりに、一括確認できる便利なビューノード'] },
+
+  // ==================== Flow Control（フロー制御）====================
+  { id:'if-switch', name:'IF Switch', cat:'flow', badge:'フロー制御', badgeCls:'badge-flow',
+    desc:'フロー変数の値に基づいて処理を2つのルートに分岐します。条件によって処理内容を切り替える場合に使います。',
+    ports:{ in:['データテーブル（＋フロー変数）'], out:['Trueルート','Falseルート'] },
+    detail:'Boolean型のフロー変数の値がtrueなら上のポートへ、falseなら下のポートへデータを流します。',
+    config:[
+      {f:'Variable name', d:'分岐判定に使うBoolean型フロー変数の名前。'},
+    ],
+    example:{ title:'フラグに応じて処理を切り替える場合', code:'事前にJava Snippet等でフロー変数 run_mode を設定\n  run_mode = true → 本番処理\n  run_mode = false → テスト処理\n\nIF Switch:\n  Variable: run_mode\n  → True側: 本番処理フロー\n  → False側: テスト用サンプル処理フロー\n\n→ End IFで2つのルートを合流', note:'フロー変数はTable Row To Variable等から設定するか、Workflow Variables（ワークフロー定義変数）を使います。' },
+    tips:['必ずEnd IFノードで合流させる','分岐後の両ルートを合流させないと下流ノードが接続できない'] },
+
+  { id:'end-if', name:'End IF', cat:'flow', badge:'フロー制御', badgeCls:'badge-flow',
+    desc:'IF Switchで分岐したルートを合流させます。IF Switchと必ずセットで使います。',
+    ports:{ in:['Trueルートの結果','Falseルートの結果'], out:['合流テーブル'] },
+    detail:'実際に実行されたルートの結果が出力されます（実行されなかったルートは無視）。',
+    config:[
+      {f:'（設定なし）', d:'IF Switchと対で使用。実行されたルートの結果を出力します。'},
+    ],
+    example:{ title:'IF Switchの合流点として使う場合', code:'IF Switch（True側）\n  → 本番処理 → End IFの上ポート\nIF Switch（False側）\n  → テスト処理 → End IFの下ポート\n\n→ End IFの出力: 実行されたルートの結果テーブル\n→ 後続の処理は同じノードを接続できる', note:'両ルートに必ず接続してください。片方しか接続しないとエラーになります。' },
+    tips:['IF Switch → (処理A or 処理B) → End IFが基本構成','合流後のテーブルは必ずどちらか一方のルートの結果になる'] },
+
+  { id:'case-switch', name:'Case Switch (Data)', cat:'flow', badge:'フロー制御', badgeCls:'badge-flow',
+    desc:'フロー変数の値に応じて最大10個のルートに分岐します。IF Switchより多分岐に対応。',
+    ports:{ in:['データテーブル（＋フロー変数）'], out:['Case 0','Case 1','Case 2','...'] },
+    detail:'Integer型のフロー変数の値（0, 1, 2...）に対応するポートにデータを流します。',
+    config:[
+      {f:'Variable name', d:'分岐判定に使うInteger型フロー変数の名前。'},
+      {f:'Number of outputs', d:'出力ポートの数（最大10）。'},
+    ],
+    example:{ title:'処理モード（0:集計/1:フィルタ/2:変換）で分岐する場合', code:'フロー変数: process_mode = 0, 1, または 2\n\nCase Switch:\n  Variable: process_mode\n  Number of outputs: 3\n\n  Case 0 → GroupBy処理\n  Case 1 → Row Filter処理\n  Case 2 → Math Formula処理\n\n→ Case Switch End（3入力版）で合流', note:'フロー変数の値が出力ポート数を超えている場合はエラーになります。必ず範囲内の値を設定してください。' },
+    tips:['値が2つ（true/false）なら IF Switch、3つ以上なら Case Switch を使う'] },
+
+  { id:'empty-table-switch', name:'Empty Table Switch', cat:'flow', badge:'フロー制御', badgeCls:'badge-flow',
+    desc:'入力テーブルが空かどうかで処理を分岐します。空テーブルが流れてきたときのエラー防止に使います。',
+    ports:{ in:['データテーブル'], out:['非空テーブル','空テーブル'] },
+    detail:'Row Filter後やファイル読込後などで空テーブルが発生しうる箇所に設置します。',
+    config:[
+      {f:'（設定なし）', d:'接続するだけで自動的に空かどうかを判定して分岐します。'},
+    ],
+    example:{ title:'Row Filter後に空テーブルが発生した場合のエラー防止', code:'Row Filter\n  → Empty Table Switch\n    → 上のポート（非空）: 通常処理を続ける\n    → 下のポート（空）: 処理をスキップ or\n                         警告ログを出してBreak Loop\n\n→ 空テーブルによる後続ノードのエラーを防げる', note:'ループ処理中に特定の反復でデータが空になる場合に特に重要です。Break Loopと組み合わせてループを安全に終了できます。' },
+    tips:['ループ内で「データが空になったら終了」の条件に必ず使う','前処理パイプラインのエラー対策として重要なノード'] },
+
+  { id:'try-catch-loop', name:'Try/Catch Loop Start', cat:'flow', badge:'フロー制御', badgeCls:'badge-flow',
+    desc:'エラーが発生した処理をスキップして処理を継続させます。ファイルループでエラーがあるファイルを無視して続けたい場合に使います。',
+    ports:{ in:['データテーブル（任意）'], out:['試行テーブル'] },
+    detail:'Catch Errors Loop Endと対で使います。エラー発生時はそのループ反復をスキップします。',
+    config:[
+      {f:'（設定なし）', d:'Try/Catch Loop Startを置き、ループ処理ノード、Catch Errors Loop Endの順に接続。'},
+    ],
+    example:{ title:'複数ファイル処理中にエラーがあってもスキップして継続する場合', code:'Row Loop Start（ファイルリスト）\n  → Try/Catch Loop Start\n    → CSV Reader（一部ファイルで失敗する可能性）\n    → 処理ノード\n  → Catch Errors Loop End\n→ Loop End（全結果集約）\n\n→ エラーが発生したファイルはスキップされ\n   残りのファイルを処理し続ける', note:'エラーをすべて無視するのではなく、Catch Errors Loop EndのエラーログをCSVに書き出して後で確認することを推奨します。' },
+    tips:['大量ファイルの一括処理で途中エラーが起きても止まらないようにするのが主な用途','エラーログは必ず保存して後で確認する習慣をつける'] },
+
+  { id:'java-snippet', name:'Java Snippet', cat:'flow', badge:'フロー制御', badgeCls:'badge-flow',
+    desc:'Javaコードを使って複雑な処理やフロー変数の操作を行います。組み込みノードでは対応できない処理に使います。',
+    ports:{ in:['データテーブル（任意）'], out:['処理後テーブル'] },
+    detail:'Javaの基本文法を使って列の計算・変数操作・外部クラス呼び出しなどが可能です。',
+    config:[
+      {f:'Java Snippet', d:'処理コードを記述する欄。入力列は c_列名、出力列はout_列名 で参照。'},
+      {f:'Custom variables', d:'カスタム変数を追加できる。フロー変数として後続ノードで参照可能。'},
+    ],
+    example:{ title:'複雑な条件でフロー変数を設定する場合', code:'// 例: 行数が1000以上かどうかをフロー変数にセット\nif (table.size() >= 1000) {\n  flowVariables.put("is_large", true);\n} else {\n  flowVariables.put("is_large", false);\n}\n\n→ 後続の IF Switch で flowVariables["is_large"] を参照', note:'Java Snippetはデバッグが難しいため、可能な限り専用ノードで代替することを推奨します。どうしても必要な場合のみ使ってください。' },
+    tips:['なるべく専用ノードで解決する。Java Snippetは最後の手段として使う','構文エラーは設定画面下部のコンパイルエラーで確認できる'] },
+
+  { id:'normalizer', name:'Normalizer', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'数値列をMin-Max正規化（0〜1）または Z-score標準化（平均0・標準偏差1）に変換します。機械学習の前処理として必須。',
+    ports:{ in:['データテーブル'], out:['正規化テーブル','正規化モデル'] },
+    detail:'正規化モデルを保存して予測データにも同じスケール変換を適用できます。',
+    config:[
+      {f:'Columns', d:'正規化する数値列をIncludeに移動。'},
+      {f:'Normalization method', d:'Min-Max Normalization（0〜1に変換）/ Z-score Normalization（平均0・分散1に変換）/ Decimal scaling。'},
+    ],
+    example:{ title:'機械学習の前処理として全数値列を標準化する場合', code:'Normalization method: Z-score Normalization\nInclude: age, income, purchase_count（全数値列）\n\n→ 出力テーブル: 各列が平均0・標準偏差1に変換済み\n→ モデル出力: Denormalizerノードで元のスケールに戻すために保存\n\n※ Z-score後の値の目安:\n  -3〜3の範囲: 正常\n  ±3以上: 外れ値の可能性', note:'訓練データで作成した正規化モデルを、テストデータ・本番データにも同じ変換で適用することが重要です（Normalizerモデル出力→Normalizer Applyノード）。' },
+    tips:['距離ベースモデル（KNN, SVM, ロジスティック回帰）は正規化なしでは精度が大幅に低下する','Decision Tree / Random Forestは正規化不要'] },
+
+  { id:'missing-value', name:'Missing Value', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
+    desc:'欠損値（Missing Value）を指定した方法で補完または除去します。データ前処理の定番ノードです。',
+    ports:{ in:['データテーブル'], out:['補完済みテーブル'] },
+    detail:'列ごとに補完方法を設定できます（平均・中央値・固定値・前後の値など）。',
+    config:[
+      {f:'Missing value handling（数値列）', d:'Mean（平均）/ Median（中央値）/ Fixed value（固定値）/ Most frequent（最頻値）/ Remove row（行削除）。'},
+      {f:'Missing value handling（文字列列）', d:'Fixed value（"不明"など）/ Most frequent / Remove row。'},
+    ],
+    example:{ title:'数値列は平均補完・文字列列は「不明」で補完する場合', code:'数値列（年齢, 売上金額）: Mean（平均値で補完）\n文字列列（地域, 職業）: Fixed value = "不明"\n\n→ 欠損値がなくなり後続の機械学習ノードがエラーにならない\n\n▼ 欠損値の多い列は先に除去する（列ごと）:\n  Statistics → 欠損率50%以上の列 → Column Filter', note:'欠損値の補完方法はデータの性質によって変えてください。時系列データは前の値で補完（Forward）が適切なことが多いです。' },
+    tips:['StatisticsノードでMissing count列を確認してから補完方法を決める','欠損が多すぎる列（例:50%以上）は補完より除去を検討'] },
+
+  { id:'scorer', name:'Scorer', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
+    desc:'分類モデルの評価指標（Accuracy・Precision・Recall・F1スコアなど）を計算します。混同行列も表示されます。',
+    ports:{ in:['予測結果テーブル'], out:['混同行列テーブル','精度テーブル'] },
+    detail:'クラス分類モデルの性能評価に必ず使います。',
+    config:[
+      {f:'First column（正解列）', d:'正解ラベルの列名（例: 購入フラグの正解値）。'},
+      {f:'Second column（予測列）', d:'モデルが予測したクラスの列名（例: Prediction）。'},
+    ],
+    example:{ title:'購入予測モデルの精度を評価する場合', code:'First column: 購入フラグ（正解）\nSecond column: Prediction（予測結果）\n\n→ 混同行列（例）:\n             予測: Yes  予測: No\n  正解: Yes    85        15\n  正解: No     20       130\n\n→ 精度テーブル:\n  Accuracy: 86.0%\n  Precision（Yes）: 81.0%\n  Recall（Yes）: 85.0%\n  F1-score: 83.0%', note:'Accuracyだけで評価するのは危険です。不均衡データではF1スコアやROC-AUCも必ず確認してください。' },
+    tips:['分類精度はScorerノード、回帰精度はNumeric Scorerノードを使う','混同行列を見ると偽陽性・偽陰性のバランスが把握できる'] },
+];
+
+const LOOPS = [
+  { id:'row-loop', name:'行単位ループ（Table Row To Variable）',
+    desc:'テーブルの各行を1行ずつ処理したい場合に使います。例：各行のファイルパスに対して個別にファイルを読み込む。',
+    nodes:['Table Row To Variable Loop Start','処理ノード群','Loop End'],
+    steps:['Table Row To Variable Loop Startをワークフローに追加し、入力テーブルを接続','ループ内に処理ノードを配置し、$${S列名}$$ でフロー変数を参照','Loop Endで結果を集約'],
+    note:'処理数 = 入力テーブルの行数 になります。行数が多い場合は処理時間に注意。' },
+
+  { id:'chunk-loop', name:'チャンクループ（Chunk Loop Start）',
+    desc:'大量データを一定サイズに分割して処理します。メモリを節約したい場合に有効。',
+    nodes:['Chunk Loop Start','処理ノード群','Loop End'],
+    steps:['Chunk Loop Startを追加してChunk sizeを設定（例：1000）','処理ノードを接続。各反復でChunk size行のテーブルが渡される','Loop Endで全チャンクを連結'],
+    note:'最後のチャンクはChunk size未満になることがあります。' },
+
+  { id:'count-loop', name:'カウントループ（Count Loop Start）',
+    desc:'指定した回数だけ処理を繰り返します。例：5回ランダムサンプリングを行い結果を集約。',
+    nodes:['Count Loop Start（回数指定）','処理ノード群','Loop End'],
+    steps:['Count Loop Startを追加して繰り返し回数を設定','各反復で現在のカウントはフロー変数$$LOOP_ITERATION$$で取得可能','Loop Endで集約'],
+    note:'繰り返し回数は設定時に固定です。動的に変えたい場合はVariable Loop Startを使います。' },
+
+  { id:'file-loop', name:'ファイルループ（List Files + Row Loop）',
+    desc:'フォルダ内の複数ファイルを一括処理します。',
+    nodes:['List Files/Folders','Table Row To Variable Loop Start','CSV Reader（変数参照）','Loop End'],
+    steps:['List Files/Foldersでフォルダ内のファイルパス一覧テーブルを作成','Table Row To Variable Loop StartでファイルパスをURLフロー変数として取得','CSV ReaderやExcel ReaderのFile URLにフロー変数を設定して各ファイルを読込','Loop Endで全ファイルのデータを連結'],
+    note:'ファイル形式が統一されていることを確認してください。' },
+
+  { id:'param-sweep', name:'パラメータスイープ（Variable Loop）',
+    desc:'複数のパラメータ設定で同じ処理を繰り返して結果を比較します。',
+    nodes:['Table Creator（パラメータテーブル）','Variable Loop Start','機械学習ノード群','Loop End'],
+    steps:['Table Creatorでパラメータの組み合わせテーブルを作成（例：k=3,5,7の行）','Variable Loop Startに接続','ループ内でフロー変数をモデルの設定に使用','Loop Endで各パラメータの評価結果を集約'],
+    note:'GridSearchCVに相当する処理をKNIMEで実装できます。' },
+];
+
+const TEMPLATES = [
+  { name:'CSVデータ前処理パイプライン', category:'前処理',
+    desc:'CSVを読み込み、欠損値補完・外れ値除去・正規化まで行う基本パイプライン',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Missing Value', cls:'proc'},
+      {label:'Row Filter（外れ値除去）', cls:'proc'},
+      {label:'Normalizer', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['Missing ValueでNaN列を平均値補完','Row FilterでZスコア>3を除外','Normalizerでモデル用に0-1スケーリング'] },
+
+  { name:'Excelファイル一括読み込み', category:'ループ',
+    desc:'フォルダ内の全Excelファイルを読み込んで1つのテーブルに結合する',
+    nodes:[
+      {label:'List Files', cls:'io'},
+      {label:'Row Loop Start', cls:'loop'},
+      {label:'Excel Reader', cls:'io'},
+      {label:'Loop End（Concat）', cls:'loop'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['List Filesでファイルパス一覧取得','フロー変数でExcel Readerのパスを動的変更','Loop Endで全ファイルのデータを縦連結'] },
+
+  { name:'グループ別集計レポート', category:'集計',
+    desc:'カテゴリ列でグループ化して合計・平均・件数を計算する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Row Filter', cls:'proc'},
+      {label:'GroupBy', cls:'proc'},
+      {label:'Sorter', cls:'proc'},
+      {label:'Excel Writer', cls:'io'},
+    ],
+    tips:['GroupByでSum・Mean・Countを同時計算','Sorterで集計値の降順に並べ替え'] },
+
+  { name:'2テーブルの突合チェック', category:'結合',
+    desc:'マスターテーブルとトランザクションを結合し、差異をチェックする',
+    nodes:[
+      {label:'CSV Reader（マスタ）', cls:'io'},
+      {label:'CSV Reader（トランザクション）', cls:'io'},
+      {label:'Joiner（Left Join）', cls:'proc'},
+      {label:'Row Filter（Not Null）', cls:'proc'},
+      {label:'Excel Writer（差異）', cls:'io'},
+    ],
+    tips:['Left Joinで右テーブルにない行を検出','右テーブル由来の列がMissingな行が「突合NG」行'] },
+
+  { name:'分類モデル学習・評価', category:'機械学習',
+    desc:'データ分割→モデル学習→予測→評価の基本パターン',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Partitioning（7:3）', cls:'proc'},
+      {label:'Decision Tree Learner', cls:'proc'},
+      {label:'Decision Tree Predictor', cls:'proc'},
+      {label:'Scorer', cls:'proc'},
+    ],
+    tips:['Partitioningで学習:テスト=70:30に分割','Scorerで混同行列と精度を確認'] },
+
+  { name:'テキストデータのクリーニング', category:'前処理',
+    desc:'文字列列の空白除去・大文字統一・不要文字除去を行う',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'String Manipulation（trim）', cls:'proc'},
+      {label:'String Manipulation（lower）', cls:'proc'},
+      {label:'String Manipulation（replace）', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['trim()で前後空白除去','lowerCase()で大文字→小文字統一','regexReplace()で特殊文字除去'] },
+
+  { name:'日次バッチ処理（ループ）', category:'ループ',
+    desc:'日付リストを生成してループし、日次レポートを出力する',
+    nodes:[
+      {label:'Table Creator（日付リスト）', cls:'io'},
+      {label:'Row Loop Start', cls:'loop'},
+      {label:'DB Reader（日付フィルタ）', cls:'io'},
+      {label:'GroupBy（集計）', cls:'proc'},
+      {label:'Loop End', cls:'loop'},
+    ],
+    tips:['Table Creatorで処理対象日付一覧を手動または自動生成','DB ReaderのSQLにフロー変数（日付）を組み込む'] },
+
+  { name:'外れ値検出と分離', category:'前処理',
+    desc:'Z-scoreで外れ値を検出し、正常値と外れ値を別ファイルに出力する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Statistics', cls:'proc'},
+      {label:'Math Formula（Zスコア）', cls:'proc'},
+      {label:'Row Splitter', cls:'proc'},
+      {label:'CSV Writer×2', cls:'io'},
+    ],
+    tips:['Statisticsで平均・標準偏差を取得','Math Formulaで(x-mean)/stdを計算','Row Splitterで|Z|>3の行を外れ値として分離'] },
+];
+
+const ERRORS = [
+  { keyword:['spec does not match','column.*not contained','列.*存在しない','Column.*not found'],
+    title:'列が見つからない / スペックが一致しない',
+    cause:'接続先ノードが期待する列名・型が入力テーブルに存在しないため発生します。',
+    solutions:[
+      '上流ノードの出力テーブルを右クリック→「Open port view」で列一覧を確認する',
+      '列名のスペルミス・大文字小文字・空白の違いがないか確認する',
+      'Column Renameノードで列名を統一してから接続する',
+      '型が合わない場合はNumber To String / String To Numberなどの型変換ノードを挿入する',
+    ] },
+  { keyword:['OutOfMemoryError','out of memory','GC overhead','ヒープ'],
+    title:'メモリ不足（OutOfMemoryError）',
+    cause:'処理するデータ量がKNIMEに割り当てられたJVMメモリを超えています。',
+    solutions:[
+      'knime.ini（KNIMEインストールフォルダ内）を開き -Xmx の値を増やす（例: -Xmx4g → -Xmx8g）',
+      'KNIMEの「File > Preferences > KNIME > Workflows」でディスクスペース活用（Column Store）を有効化',
+      'Chunk Loop Startで大量データを分割処理してメモリ使用を抑える',
+      '不要な列をColumn Filterで早めに削除してメモリを節約する',
+    ] },
+  { keyword:['Execute failed','execution failed','実行エラー','failed to execute'],
+    title:'ノード実行エラー（Execute failed）',
+    cause:'上流データの問題・設定ミス・データ型不一致など様々な原因があります。',
+    solutions:[
+      'エラーが出たノードを右クリック→「Open error log」で詳細なスタックトレースを確認する',
+      '直前ノードの出力をポートビューで確認し、データ内容に問題がないか検証する',
+      'ノードの設定を開き、入力データに対して設定が適切か見直す',
+      '問題のノードを一度削除して再追加・再設定する',
+    ] },
+  { keyword:['duplicate rowid','RowID.*already exists','行ID.*重複'],
+    title:'行ID（RowID）の重複エラー',
+    cause:'ConcatenateやLoopで複数テーブルを結合した際に行IDが重複しています。',
+    solutions:[
+      'Concatenateノードの設定で「Append suffix to duplicate RowIDs」にチェックを入れる',
+      'RowID生成ノード（RowID）でシーケンシャルなIDに振り直す',
+      'Loop Endで「Create RowIDs (unique)」オプションを有効にする',
+    ] },
+  { keyword:['class cast','ClassCastException','型変換','cannot convert','cast'],
+    title:'データ型変換エラー',
+    cause:'数値列に文字列が混在している、または型が一致しない処理を行っています。',
+    solutions:[
+      'Statistics / Value Counterノードでデータの実際の中身を確認する',
+      'String To Numberノードで変換できない値を「Set empty on error」で欠損値にしてから処理する',
+      'Cell Type Changerノードで列の型を明示的に変換する',
+    ] },
+  { keyword:['no such file','ファイルが見つかりません','file not found','cannot open'],
+    title:'ファイルが見つからない',
+    cause:'指定したファイルパスが存在しないか、アクセス権がありません。',
+    solutions:[
+      'ファイルパスを絶対パスで指定し直す',
+      'パスに日本語・スペースが含まれる場合は別の場所にファイルを移動する',
+      'ループで動的パスを使っている場合はフロー変数の値をログで確認する（String to Path変換など）',
+    ] },
+  { keyword:['connection refused','timeout','接続できません','db connection'],
+    title:'データベース接続エラー',
+    cause:'DBサーバへの接続情報が誤っている、またはDBが起動していません。',
+    solutions:[
+      'ホスト名・ポート・DB名・認証情報が正しいか確認する',
+      'DBサーバが起動しているかネットワーク管理者に確認する',
+      '接続ノード（DB Connector）で「Test connection」ボタンを押して接続テストをする',
+    ] },
+  { keyword:['infinite loop','loop did not terminate','ループが終了しない'],
+    title:'無限ループ / ループが終了しない',
+    cause:'ループの終了条件が正しく設定されていないか、終了シグナルが伝わっていません。',
+    solutions:[
+      'Loop End の「Collect rows per row」や終了条件設定を確認する',
+      'Recursive Loop Endを使っている場合は「End loop」接続が正しいか確認する',
+      'ループ内でデータが空になるケースを考慮する（EmptyとBreak条件を追加）',
+    ] },
+];
+
+// ==================== ICONS ====================
+const ICONS = {
+  io: `<svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+  </svg>`,
+  manip: `<svg viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+  </svg>`,
+  filter: `<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+  </svg>`,
+  join: `<svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/>
+  </svg>`,
+  agg: `<svg viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+  </svg>`,
+  ml: `<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/>
+    <circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/>
+    <line x1="6" y1="6" x2="10" y2="10"/><line x1="18" y1="6" x2="14" y2="10"/>
+    <line x1="6" y1="18" x2="10" y2="14"/><line x1="18" y1="18" x2="14" y2="14"/>
+  </svg>`,
+  loop: `<svg viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+    <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+  </svg>`,
+  viz: `<svg viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </svg>`,
+  flow: `<svg viewBox="0 0 24 24" fill="none" stroke="#7e22ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/>
+    <rect x="9" y="15" width="6" height="6" rx="1"/>
+    <path d="M6 9v3a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3V9"/><line x1="18" y1="9" x2="12" y2="18"/>
+  </svg>`,
+};
+
+const FLOW_ICONS = {
+  io:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  proc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  loop: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`,
+  end:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+};
+
+// ==================== STATE ====================
+let currentCat = 'all';
+
+// ==================== INIT ====================
+window.onload = function() {
+  renderNodes();
+  renderLoops();
+  renderTemplates();
+  renderCommonErrors();
+  // ホームのフロー図
+  const homeFlow = document.getElementById('home-flow');
+  if(homeFlow) homeFlow.innerHTML = [
+    {cls:'io',label:'CSV Reader'},{cls:'proc',label:'Row Filter'},
+    {cls:'proc',label:'Column Filter'},{cls:'proc',label:'Math Formula'},{cls:'io',label:'CSV Writer'}
+  ].map((n,i,a)=>`<span class="flow-node ${n.cls}">${FLOW_ICONS[n.cls]||''}${n.label}</span>${i<a.length-1?'<span class="flow-arrow">→</span>':''}`).join('');
+  // ループ概要のフロー図
+  const loopIntro = document.getElementById('loop-intro-flow');
+  if(loopIntro) loopIntro.innerHTML = [
+    {cls:'loop',label:'Loop Start'},{cls:'proc',label:'処理A'},
+    {cls:'proc',label:'処理B'},{cls:'loop',label:'Loop End'}
+  ].map((n,i,a)=>`<span class="flow-node ${n.cls}">${FLOW_ICONS[n.cls]||''}${n.label}</span>${i<a.length-1?'<span class="flow-arrow">→</span>':''}`).join('');
+};
+
+// ==================== PAGES ====================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const mapping = {home:0, nodes:1, loops:2, templates:3, errors:4};
+  const items = document.querySelectorAll('.nav-item');
+  if (mapping[id] !== undefined) items[mapping[id]].classList.add('active');
+}
+
+// ==================== NODES ====================
+function renderNodes() {
+  const q = (document.getElementById('node-search')?.value || '').toLowerCase();
+  const container = document.getElementById('node-list');
+  const filtered = NODES.filter(n => {
+    const catOk = currentCat === 'all' || n.cat === currentCat;
+    const qOk = !q || n.name.toLowerCase().includes(q) || n.desc.toLowerCase().includes(q);
+    return catOk && qOk;
+  });
+  if (!filtered.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:1rem">該当するノードが見つかりませんでした</p>'; return; }
+
+  // 種類ごとに上位から並べ替え（フィルタチップと同じ順序）
+  const CAT_ORDER = ['io','manip','filter','join','agg','ml','loop','viz','flow'];
+  filtered.sort((a,b) => CAT_ORDER.indexOf(a.cat) - CAT_ORDER.indexOf(b.cat));
+
+  // 「すべて」表示時は種類ごとに見出しを挿入してグループを明確化
+  if (currentCat === 'all') {
+    let html = '';
+    let lastCat = null;
+    filtered.forEach(n => {
+      if (n.cat !== lastCat) {
+        const count = filtered.filter(x => x.cat === n.cat).length;
+        html += `<div class="cat-section-header"><span class="cat-section-icon icon-${n.cat}">${ICONS[n.cat]||''}</span><span class="cat-section-title">${n.badge}</span><span class="cat-section-count">${count}件</span></div>`;
+        lastCat = n.cat;
+      }
+      html += nodeCardHTML(n);
+    });
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = filtered.map(nodeCardHTML).join('');
+  }
+}
+
+function nodeCardHTML(n) {
+  return `
+    <div class="card expandable" onclick="toggleCard('${n.id}')">
+      <div class="card-header">
+        <div class="node-icon-box icon-${n.cat}">${ICONS[n.cat] || ''}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+            <span class="card-badge ${n.badgeCls}">${n.badge}</span>
+            <span class="card-title">${n.name}</span>
+          </div>
+          <div class="card-subtitle">${n.desc}</div>
+        </div>
+        <span class="expand-toggle" id="toggle-${n.id}">▼ 詳細</span>
+      </div>
+      <div class="expand-content" id="detail-${n.id}">
+        ${n.ports.in.length || n.ports.out.length ? `
+        <div style="margin-bottom:.75rem">
+          ${n.ports.in.length ? `<div style="margin-bottom:.3rem;font-size:.78rem;color:var(--text-muted);font-weight:600">入力ポート</div>
+          <div class="port-row">${n.ports.in.map(p=>`<span class="port-tag port-in">${p}</span>`).join('')}</div>` : ''}
+          ${n.ports.out.length ? `<div style="margin:.4rem 0 .3rem;font-size:.78rem;color:var(--text-muted);font-weight:600">出力ポート</div>
+          <div class="port-row">${n.ports.out.map(p=>`<span class="port-tag port-out">${p}</span>`).join('')}</div>` : ''}
+        </div>` : ''}
+        <p style="font-size:.875rem;margin-bottom:.75rem">${n.detail}</p>
+
+        ${n.config && n.config.length ? `
+        <div style="margin-bottom:1rem">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">⚙️ 設定項目</div>
+          <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+            ${n.config.map(c=>`
+            <tr style="border-top:1px solid var(--border)">
+              <td style="padding:.45rem .6rem .45rem 0;vertical-align:top;min-width:160px;font-weight:600;color:var(--text);white-space:pre-wrap">${c.f}</td>
+              <td style="padding:.45rem 0;vertical-align:top;color:var(--text-muted);white-space:pre-wrap">${c.d}</td>
+            </tr>`).join('')}
+          </table>
+        </div>` : ''}
+
+        ${n.example ? `
+        <div style="background:#f8faff;border:1px solid #c7d7f8;border-radius:8px;padding:.875rem 1rem;margin-bottom:.75rem">
+          <div style="font-size:.78rem;font-weight:700;color:#1e40af;margin-bottom:.5rem">📝 入力例 — ${n.example.title}</div>
+          <pre style="font-size:.78rem;font-family:Consolas,monospace;background:#fff;border:1px solid #dbeafe;border-radius:6px;padding:.6rem .875rem;margin:.25rem 0 .5rem;overflow-x:auto;white-space:pre-wrap;line-height:1.7;color:#1e293b">${n.example.code}</pre>
+          ${n.example.note ? `<div style="font-size:.78rem;color:#374151;background:#fffbeb;border-left:3px solid #f59e0b;padding:.35rem .6rem;border-radius:0 4px 4px 0">⚠️ ${n.example.note}</div>` : ''}
+        </div>` : ''}
+
+        ${n.tips && n.tips.length ? `<ul style="font-size:.82rem;padding-left:1.25rem;color:var(--text-muted)">${n.tips.map(t=>`<li style="margin-bottom:.25rem">💡 ${t}</li>`).join('')}</ul>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function toggleCard(id) {
+  const detail = document.getElementById('detail-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  const open = detail.classList.toggle('open');
+  toggle.textContent = open ? '▲ 閉じる' : '▼ 詳細';
+}
+
+function filterNodes() { renderNodes(); }
+
+function setCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('#node-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderNodes();
+}
+
+// ==================== LOOPS ====================
+function renderLoops() {
+  document.getElementById('loop-cards').innerHTML = LOOPS.map(l => `
+    <div class="card" style="margin-top:1rem">
+      <div class="card-header">
+        <div>
+          <div class="card-badge badge-loop" style="margin-bottom:.4rem">ループパターン</div>
+          <div class="card-title">${l.name}</div>
+          <div class="card-subtitle">${l.desc}</div>
+        </div>
+      </div>
+      <div class="flow-diagram">
+        ${l.nodes.map((n,i)=>{const cls=n.toLowerCase().includes('loop')?'loop':n.toLowerCase().includes('reader')||n.toLowerCase().includes('writer')||n.toLowerCase().includes('files')||n.toLowerCase().includes('creator')?'io':'proc';return`<span class="flow-node ${cls}">${FLOW_ICONS[cls]||''}${n}</span>${i<l.nodes.length-1?'<span class="flow-arrow">→</span>':''}`}).join('')}
+      </div>
+      <div style="margin-top:.75rem">
+        <div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem;color:var(--text-muted)">設定手順</div>
+        <ol class="steps">${l.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>
+      ${l.note ? `<div style="margin-top:.75rem;padding:.6rem .875rem;background:var(--warn-light);border-radius:6px;font-size:.8rem;color:#92400e">⚠️ ${l.note}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ==================== TEMPLATES ====================
+function renderTemplates() {
+  document.getElementById('template-grid').innerHTML = TEMPLATES.map(t => `
+    <div class="template-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem">
+        <span class="card-badge" style="background:var(--primary-light);color:var(--primary)">${t.category}</span>
+      </div>
+      <h3>${t.name}</h3>
+      <p>${t.desc}</p>
+      <div class="flow-diagram">
+        ${t.nodes.map((n,i)=>`<span class="flow-node ${n.cls}">${FLOW_ICONS[n.cls]||''}${n.label}</span>${i<t.nodes.length-1?'<span class="flow-arrow">→</span>':''}`).join('')}
+      </div>
+      <ul style="font-size:.78rem;color:var(--text-muted);padding-left:1.1rem;margin-top:.5rem">${t.tips.map(tip=>`<li style="margin-bottom:.2rem">${tip}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+}
+
+// ==================== ERRORS ====================
+function renderCommonErrors() {
+  document.getElementById('common-errors').innerHTML = ERRORS.map(e => `
+    <div style="padding:.75rem 0;border-bottom:1px solid var(--border)">
+      <div style="font-weight:600;font-size:.875rem;margin-bottom:.25rem;cursor:pointer;color:var(--primary)" onclick="prefillError('${e.keyword[0]}')">
+        🔴 ${e.title}
+      </div>
+      <div style="font-size:.8rem;color:var(--text-muted)">${e.cause}</div>
+    </div>
+  `).join('');
+}
+
+function prefillError(kw) {
+  document.getElementById('error-input').value = kw;
+  showPage('errors');
+  diagnoseError();
+}
+
+function clearError() {
+  document.getElementById('error-input').value = '';
+  document.getElementById('error-result').innerHTML = '';
+}
+
+function diagnoseError() {
+  const input = document.getElementById('error-input').value.toLowerCase().trim();
+  if (!input) { document.getElementById('error-result').innerHTML = '<p style="color:var(--text-muted);font-size:.875rem;margin-top:.75rem">エラーメッセージを入力してください</p>'; return; }
+
+  let matched = null;
+  for (const e of ERRORS) {
+    if (e.keyword.some(k => new RegExp(k,'i').test(input))) { matched = e; break; }
+  }
+
+  const el = document.getElementById('error-result');
+  if (matched) {
+    el.innerHTML = `
+      <div class="error-result success" style="margin-top:1rem">
+        <h4>✅ 対処法が見つかりました：${matched.title}</h4>
+        <p style="font-size:.85rem;margin-bottom:.6rem;color:var(--text)"><strong>原因：</strong>${matched.cause}</p>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:.35rem">解決策：</div>
+        <ol style="font-size:.85rem;padding-left:1.25rem;line-height:1.8">${matched.solutions.map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>`;
+  } else {
+    el.innerHTML = `
+      <div class="error-result" style="margin-top:1rem">
+        <h4>⚠️ 自動診断できませんでした</h4>
+        <p style="font-size:.85rem;margin:.25rem 0 .75rem">入力されたエラーに対応する解決策がデータベースにありません。以下の方法をお試しください：</p>
+        <ol style="font-size:.85rem;padding-left:1.25rem;line-height:1.8">
+          <li>エラーが発生したノードを右クリック →「Open error log」で詳細なエラーメッセージを確認する</li>
+          <li>KNIME公式フォーラム（forum.knime.com）でエラーメッセージを検索する</li>
+          <li>上流ノードの出力ポートビューでデータ内容を確認し、期待通りか検証する</li>
+          <li>ノードを一度リセット（右クリック→Reset）してから再実行する</li>
+        </ol>
+      </div>`;
+  }
+}
+</script>
+</body>
+</html>

@@ -44,18 +44,52 @@
   .nav-item { display: flex; align-items: center; gap: .5rem; padding: .5rem 1.25rem; cursor: pointer; font-size: .875rem; color: var(--text); border-left: 3px solid transparent; transition: all .15s; }
   .nav-item:hover { background: var(--bg); }
   .nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
-  .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+  .nav-icon { width: 20px; height: 20px; min-width: 20px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); transition: color .15s; }
+  .nav-icon svg { width: 18px; height: 18px; }
+  .nav-item:hover .nav-icon { color: var(--primary); }
+  .nav-item.active .nav-icon { color: var(--primary); }
 
   /* Page header */
   .page-header { margin-bottom: 2rem; }
-  .page-header h2 { font-size: 1.6rem; font-weight: 700; }
+  .page-header h2 { font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: .6rem; }
+  .page-header h2 .head-ic { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; min-width: 34px; background: var(--primary-light); color: var(--primary); border-radius: 9px; }
+  .page-header h2 .head-ic svg { width: 20px; height: 20px; }
   .page-header p { color: var(--text-muted); margin-top: .25rem; }
+
+  /* Home hero */
+  .hero { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 2rem 1.9rem; margin-bottom: 1.75rem; }
+  .hero-eyebrow { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: var(--primary-light); padding: .3rem .7rem; border-radius: 99px; margin-bottom: 1rem; }
+  .hero-title { font-size: 2.1rem; font-weight: 800; line-height: 1.25; letter-spacing: -.01em; margin-bottom: .7rem; }
+  .hero-lead { font-size: 1rem; color: var(--text-muted); line-height: 1.75; max-width: 62ch; }
+  .hero-stats { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.5rem; }
+  .hstat { display: flex; flex-direction: column; align-items: flex-start; padding: .65rem .95rem; border: 1px solid var(--border); border-radius: 8px; min-width: 96px; }
+  .hstat-num { font-size: 1.55rem; font-weight: 800; color: var(--primary); line-height: 1; }
+  .hstat-lbl { font-size: .72rem; color: var(--text-muted); margin-top: .3rem; font-weight: 600; }
+
+  /* Home section + heading */
+  .home-section { margin-bottom: 2rem; }
+  .section-head { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+  .section-ic { width: 36px; height: 36px; min-width: 36px; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-light); color: var(--primary); border-radius: 9px; }
+  .section-ic svg { width: 20px; height: 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+  .section-sub { font-size: .8rem; color: var(--text-muted); margin-top: .15rem; }
+
+  /* Quick start cards */
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .75rem; }
+  .quick-card { display: flex; flex-direction: column; align-items: flex-start; gap: .55rem; text-align: left; padding: 1.1rem; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); cursor: pointer; transition: border-color .15s, transform .15s; font: inherit; color: inherit; }
+  .quick-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+  .quick-ic { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-light); color: var(--primary); border-radius: 9px; }
+  .quick-ic svg { width: 22px; height: 22px; }
+  .quick-card-title { font-size: .95rem; font-weight: 700; }
+  .quick-card-desc { font-size: .76rem; color: var(--text-muted); line-height: 1.45; }
+  .quick-card-go { font-size: .74rem; color: var(--primary); font-weight: 700; margin-top: .15rem; }
 
   /* Search */
   .search-box { position: relative; margin-bottom: 1.5rem; }
   .search-box input { width: 100%; padding: .6rem 1rem .6rem 2.5rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: .95rem; background: var(--surface); outline: none; transition: border .15s; }
   .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(71,85,105,.15); }
-  .search-icon { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; }
+  .search-icon { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); display: inline-flex; }
+  .search-icon svg { width: 16px; height: 16px; }
 
   /* Cards */
   .card { background: var(--surface); border-radius: var(--radius); border: 2px solid var(--border); padding: 1.25rem; box-shadow: var(--shadow); }
@@ -117,6 +151,46 @@
   .cat-section-icon svg { width: 19px; height: 19px; }
   .cat-section-title { font-size: 1.02rem; font-weight: 700; color: var(--text); }
   .cat-section-count { font-size: .72rem; font-weight: 700; color: var(--text-muted); background: var(--primary-light); padding: .12rem .55rem; border-radius: 99px; }
+
+  /* Node structure diagram (ノード辞典カード内の入力→ノード→出力図) */
+  .node-diagram { display: flex; align-items: center; gap: .6rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: .85rem .75rem; margin-bottom: .85rem; overflow-x: auto; }
+  .nd-ports { display: flex; flex-direction: column; gap: .35rem; flex-shrink: 0; }
+  .nd-port { font-size: .72rem; padding: .2rem .55rem; border-radius: 4px; white-space: nowrap; border: 1px solid var(--border); }
+  .nd-port.in  { border-color: #86efac; background: #f0fdf4; color: #166534; }
+  .nd-port.out { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; }
+  .nd-none { font-size: .72rem; color: var(--text-muted); font-style: italic; white-space: nowrap; }
+  .nd-arrow { color: var(--text-muted); flex-shrink: 0; font-size: 1.1rem; }
+  .nd-box { display: flex; flex-direction: column; align-items: center; gap: .3rem; padding: .55rem .7rem; background: var(--surface); border: 2px solid var(--primary); border-radius: 8px; min-width: 84px; flex-shrink: 0; }
+  .nd-box .nd-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .nd-box .nd-icon svg { width: 24px; height: 24px; }
+  .nd-box .nd-name { font-size: .72rem; font-weight: 700; text-align: center; line-height: 1.2; }
+
+  /* Glossary term figure (基本用語のイラスト) */
+  .term-card-inner { display: flex; align-items: center; gap: 1rem; }
+  .term-text { flex: 1; min-width: 0; }
+  .term-fig { flex-shrink: 0; width: 150px; height: 90px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: .4rem; }
+  .term-fig svg { width: 100%; height: 100%; }
+  @media (max-width: 640px) {
+    .term-card-inner { flex-direction: column-reverse; align-items: stretch; }
+    .term-fig { width: 100%; }
+  }
+
+  /* Capabilities（KNIMEでできること） */
+  .lifecycle-flow { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: .7rem .75rem; margin-bottom: 1rem; }
+  .lc-step { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .lc-step .lc-ic { width: 18px; height: 18px; display: inline-flex; }
+  .lc-step .lc-ic svg { width: 18px; height: 18px; }
+  .lc-arrow { color: var(--text-muted); flex-shrink: 0; }
+  .cap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .85rem; }
+  .cap-item { display: flex; gap: .75rem; align-items: flex-start; padding: .85rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
+  .cap-item .node-icon-box { width: 40px; height: 40px; min-width: 40px; }
+  .cap-item .node-icon-box svg { width: 22px; height: 22px; }
+  .cap-title { font-size: .9rem; font-weight: 700; margin-bottom: .15rem; }
+  .cap-desc { font-size: .78rem; color: var(--text-muted); line-height: 1.5; }
+
+  /* Loop concept diagram (ループ解説の循環図) */
+  .loop-figure { display: flex; justify-content: center; padding: 1rem .5rem .5rem; }
+  .loop-figure svg { width: 100%; max-width: 460px; height: auto; }
 
   /* Flow node with icon */
   .flow-node { display: inline-flex; align-items: center; gap: .3rem; padding: .25rem .6rem; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); font-weight: 500; }
@@ -191,17 +265,18 @@
 <!-- Sidebar -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <h1>⚙ KNIME攻略</h1>
+    <h1><svg width="18" height="18" style="vertical-align:-3px;margin-right:5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 7 17 11M7 17 17 13"/></svg>KNIME攻略</h1>
     <p>日本語ガイド</p>
   </div>
   <div class="nav-section">メニュー</div>
-  <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon">🏠</span>ホーム</div>
-  <div class="nav-item" onclick="showPage('nodes')"><span class="nav-icon">🔷</span>ノード辞典</div>
-  <div class="nav-item" onclick="showPage('loops')"><span class="nav-icon">🔄</span>ループ解説</div>
-  <div class="nav-item" onclick="showPage('templates')"><span class="nav-icon">📋</span>テンプレート集</div>
-  <div class="nav-item" onclick="showPage('errors')"><span class="nav-icon">🚨</span>エラー解決</div>
+  <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span>ホーム</div>
+  <div class="nav-item" onclick="showPage('terms')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v13"/><path d="M3 17.5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h4.5a3.5 3.5 0 0 1 4.5 0 3.5 3.5 0 0 1 4.5 0H21a1 1 0 0 1 1 1v11.5a1 1 0 0 1-1 1h-5.5a2.5 2.5 0 0 0-3.5 0 2.5 2.5 0 0 0-3.5 0z"/></svg></span>基本用語</div>
+  <div class="nav-item" onclick="showPage('nodes')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M7.1 7.1 15.9 11M7.1 16.9 15.9 13"/></svg></span>ノード辞典</div>
+  <div class="nav-item" onclick="showPage('loops')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>ループ解説</div>
+  <div class="nav-item" onclick="showPage('templates')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>テンプレート集</div>
+  <div class="nav-item" onclick="showPage('errors')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>エラー解決</div>
   <div class="sidebar-footer">
-    <p>本サイトは非公式の学習用資料です。KNIME® は KNIME AG の商標であり、本サイトは同社とは一切関係ありません。</p>
+    <p>本サイトは非公式の学習用資料です。KNIME® は KNIME AG の登録商標で、本サイトは同社とは一切関係ありません。掲載の図表はすべて独自に作成したもので、公式のロゴ・画面・素材は使用していません。</p>
   </div>
 </aside>
 
@@ -210,56 +285,130 @@
 
   <!-- HOME -->
   <div class="page active" id="page-home">
-    <div class="page-header">
-      <h2>KNIME攻略ガイドへようこそ</h2>
-      <p>ノード解説・ループ・テンプレート・エラー解決を日本語でまとめました</p>
-    </div>
-    <div class="quick-start">
-      <h3>🚀 どこから始めますか？</h3>
-      <p>目的に合わせてすぐにジャンプできます</p>
-      <div class="quick-links">
-        <span class="quick-link" onclick="showPage('nodes')">ノードを調べる</span>
-        <span class="quick-link" onclick="showPage('loops')">ループを覚える</span>
-        <span class="quick-link" onclick="showPage('templates')">テンプレートを使う</span>
-        <span class="quick-link" onclick="showPage('errors')">エラーを解決する</span>
+    <!-- ヒーロー -->
+    <section class="hero">
+      <span class="hero-eyebrow">日本語で学ぶ KNIME 非公式ガイド</span>
+      <h1 class="hero-title">コードを書かずに、<br>データ分析をはじめよう。</h1>
+      <p class="hero-lead">ノードの解説・ループ・テンプレート・エラー解決まで、KNIMEの基本を日本語でまとめた学習サイトです。知りたいところから読み進められます。</p>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-num">100</span><span class="hstat-lbl">ノード解説</span></div>
+        <div class="hstat"><span class="hstat-num">30</span><span class="hstat-lbl">テンプレート</span></div>
+        <div class="hstat"><span class="hstat-num">20</span><span class="hstat-lbl">基本用語</span></div>
+        <div class="hstat"><span class="hstat-num">8</span><span class="hstat-lbl">エラー対処</span></div>
       </div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-card blue"><div class="num">100</div><div class="lbl">ノード解説</div></div>
-      <div class="stat-card green"><div class="num">5</div><div class="lbl">ループパターン</div></div>
-      <div class="stat-card purple"><div class="num">8</div><div class="lbl">テンプレート</div></div>
-      <div class="stat-card orange"><div class="num">8</div><div class="lbl">エラー対処法</div></div>
-    </div>
-    <div class="card">
-      <div class="card-header">
+    </section>
+
+    <!-- クイックスタート -->
+    <section class="home-section">
+      <div class="section-head">
+        <span class="section-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13 13 8.5 15.5 11 11 15.5 8.5"/></svg></span>
         <div>
-          <div class="card-title">📖 KNIMEとは？</div>
+          <h2 class="section-title">どこから始めますか？</h2>
+          <p class="section-sub">目的に合わせてジャンプできます</p>
         </div>
       </div>
-      <div class="card-body">
-        <p>KNIME（ナイム）はドイツ発のオープンソースデータ分析プラットフォームです。コードを書かずにノードをつなぐだけで、データ読み込み・加工・分析・可視化・機械学習まで一貫して行えます。</p>
-        <p>ワークフローは<strong>ノード</strong>と呼ばれる処理ブロックを矢印でつないで作ります。各ノードは特定の処理（CSVの読み込み、フィルタリングなど）を担当し、上流の結果を受け取り、下流に渡します。</p>
+      <div class="quick-grid">
+        <button class="quick-card" onclick="showPage('nodes')">
+          <span class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M7.1 7.1 15.9 11M7.1 16.9 15.9 13"/></svg></span>
+          <span class="quick-card-title">ノード辞典</span>
+          <span class="quick-card-desc">100種類のノードを日本語で解説</span>
+          <span class="quick-card-go">開く →</span>
+        </button>
+        <button class="quick-card" onclick="showPage('terms')">
+          <span class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v13"/><path d="M3 17.5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h4.5a3.5 3.5 0 0 1 4.5 0 3.5 3.5 0 0 1 4.5 0H21a1 1 0 0 1 1 1v11.5a1 1 0 0 1-1 1h-5.5a2.5 2.5 0 0 0-3.5 0 2.5 2.5 0 0 0-3.5 0z"/></svg></span>
+          <span class="quick-card-title">基本用語</span>
+          <span class="quick-card-desc">KNIMEの基本20語をやさしく図解</span>
+          <span class="quick-card-go">開く →</span>
+        </button>
+        <button class="quick-card" onclick="showPage('loops')">
+          <span class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+          <span class="quick-card-title">ループ解説</span>
+          <span class="quick-card-desc">繰り返し処理を図解で理解</span>
+          <span class="quick-card-go">開く →</span>
+        </button>
+        <button class="quick-card" onclick="showPage('templates')">
+          <span class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
+          <span class="quick-card-title">テンプレート集</span>
+          <span class="quick-card-desc">30の実用フローのひな形</span>
+          <span class="quick-card-go">開く →</span>
+        </button>
+        <button class="quick-card" onclick="showPage('errors')">
+          <span class="quick-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+          <span class="quick-card-title">エラー解決</span>
+          <span class="quick-card-desc">エラーから解決策を提案</span>
+          <span class="quick-card-go">開く →</span>
+        </button>
       </div>
+    </section>
+
+    <!-- KNIMEとは -->
+    <section class="home-section">
+      <div class="section-head">
+        <span class="section-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+        <h2 class="section-title">KNIMEとは？</h2>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p>KNIME（ナイム）はドイツ発のオープンソースデータ分析プラットフォームです。コードを書かずにノードをつなぐだけで、データ読み込み・加工・分析・可視化・機械学習まで一貫して行えます。</p>
+          <p>ワークフローは<strong>ノード</strong>と呼ばれる処理ブロックを矢印でつないで作ります。各ノードは特定の処理（CSVの読み込み、フィルタリングなど）を担当し、上流の結果を受け取り、下流に渡します。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KNIMEでできること -->
+    <section class="home-section">
+      <div class="section-head">
+        <span class="section-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+        <div>
+          <h2 class="section-title">KNIMEでできること</h2>
+          <p class="section-sub"><strong style="color:var(--text)">コードを書かずに</strong>、取り込みから自動化まで一気通貫</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="lifecycle-flow" id="home-lifecycle"></div>
+        <div class="cap-grid" id="home-capabilities"></div>
+        <p style="font-size:.72rem; color:var(--text-muted); margin-top:.95rem;">
+          参考：<a href="https://www.knime.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">KNIME公式サイト</a>（最新かつ正確な情報は公式をご確認ください）
+        </p>
+      </div>
+    </section>
+
+    <!-- 基本的なワークフローの流れ -->
+    <section class="home-section">
+      <div class="section-head">
+        <span class="section-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M6 8.4v3.1a4 4 0 0 0 4 4h5.6"/></svg></span>
+        <h2 class="section-title">基本的なワークフローの流れ</h2>
+      </div>
+      <div class="card">
+        <div class="flow-diagram" id="home-flow"></div>
+        <p style="font-size:.8rem; color:var(--text-muted); margin-top:.5rem;">データ読込 → 絞り込み → 加工 → 出力　の流れが基本です</p>
+      </div>
+    </section>
+    <div style="font-size:.72rem; color:var(--text-muted); margin-top:1.5rem; line-height:1.6; border-top:1px solid var(--border); padding-top:1rem;">
+      <strong style="color:var(--text);">免責事項</strong>
+      <p style="margin-top:.3rem;">本サイトは KNIME を学ぶための<strong>非公式</strong>の学習用資料であり、KNIME AG 公式とは一切関係ありません。KNIME® および KNIME ロゴは KNIME AG の<strong>登録商標</strong>です。</p>
+      <p style="margin-top:.3rem;">本サイトに掲載している図・アイコン・イラストはすべて独自に作成したもので、公式のロゴ・画面キャプチャ・素材は一切使用していません。</p>
+      <p style="margin-top:.3rem;">内容は正確性を期していますが、最新かつ正確な情報は <a href="https://www.knime.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">KNIME公式サイト</a> をご確認ください。</p>
     </div>
-    <div class="card" style="margin-top:1rem;">
-      <div class="card-title" style="margin-bottom:.75rem;">🗺️ 基本的なワークフローの流れ</div>
-      <div class="flow-diagram" id="home-flow"></div>
-      <p style="font-size:.8rem; color:var(--text-muted); margin-top:.5rem;">データ読込 → 絞り込み → 加工 → 出力　の流れが基本です</p>
+  </div>
+
+  <!-- TERMS（基本用語） -->
+  <div class="page" id="page-terms">
+    <div class="page-header">
+      <h2><span class="head-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v13"/><path d="M3 17.5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h4.5a3.5 3.5 0 0 1 4.5 0 3.5 3.5 0 0 1 4.5 0H21a1 1 0 0 1 1 1v11.5a1 1 0 0 1-1 1h-5.5a2.5 2.5 0 0 0-3.5 0 2.5 2.5 0 0 0-3.5 0z"/></svg></span>基本用語</h2>
+      <p>KNIMEを学ぶうえで知っておきたい用語を、初心者向けにやさしく解説します。</p>
     </div>
-    <p style="font-size:.72rem; color:var(--text-muted); margin-top:1.5rem; line-height:1.6;">
-      ※ 本サイトは非公式の学習用資料です。KNIME® は KNIME AG の商標であり、本サイトは同社とは一切関係ありません。
-      掲載内容は正確性を期していますが、最新の公式情報は <a href="https://www.knime.com/" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">KNIME公式サイト</a> をご確認ください。
-    </p>
+    <div id="glossary-list"></div>
   </div>
 
   <!-- NODES -->
   <div class="page" id="page-nodes">
     <div class="page-header">
-      <h2>🔷 ノード辞典</h2>
+      <h2><span class="head-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M7.1 7.1 15.9 11M7.1 16.9 15.9 13"/></svg></span>ノード辞典</h2>
       <p>よく使うノードを日本語で解説しています。クリックで詳細を表示します。</p>
     </div>
     <div class="search-box">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
       <input type="text" id="node-search" placeholder="ノード名や機能で検索…" oninput="filterNodes()">
     </div>
     <div class="filter-chips" id="node-chips">
@@ -280,13 +429,37 @@
   <!-- LOOPS -->
   <div class="page" id="page-loops">
     <div class="page-header">
-      <h2>🔄 ループ解説</h2>
+      <h2><span class="head-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>ループ解説</h2>
       <p>KNIMEのループ処理を図解で丁寧に説明します</p>
     </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:.5rem;">ループとは？</div>
       <div class="card-body">
         <p>KNIMEのループは「同じ処理を複数回繰り返す」仕組みです。ループの入口（<strong>Loop Start</strong>）と出口（<strong>Loop End</strong>）の間にある処理が繰り返し実行されます。</p>
+        <div class="flow-figure-label" style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:.75rem;"><svg width="13" height="13" style="vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>ループの仕組み</div>
+        <div class="loop-figure">
+          <svg viewBox="0 0 460 205" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ループの仕組みを示す図">
+            <defs>
+              <marker id="arrowLp" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="var(--text-muted)"/></marker>
+              <marker id="arrowLr" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="var(--primary)"/></marker>
+            </defs>
+            <g text-anchor="middle" font-size="14" font-weight="700">
+              <rect x="12" y="38" width="120" height="50" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/>
+              <text x="72" y="68" fill="var(--text)">Loop Start</text>
+              <rect x="170" y="38" width="120" height="50" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+              <text x="230" y="63" fill="var(--text)" font-size="13">処理</text>
+              <text x="230" y="79" fill="var(--text-muted)" font-size="11" font-weight="600">（繰り返す）</text>
+              <rect x="328" y="38" width="120" height="50" rx="8" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/>
+              <text x="388" y="68" fill="var(--text)">Loop End</text>
+            </g>
+            <g stroke="var(--text-muted)" stroke-width="2" fill="none">
+              <path d="M134 63 H164" marker-end="url(#arrowLp)"/>
+              <path d="M292 63 H322" marker-end="url(#arrowLp)"/>
+            </g>
+            <path d="M388 90 V148 Q388 166 370 166 H90 Q72 166 72 148 V90" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowLr)"/>
+            <text x="230" y="192" text-anchor="middle" font-size="13" font-weight="700" fill="var(--primary)">↺ 入口に戻り、行数・回数だけ繰り返す</text>
+          </svg>
+        </div>
         <div class="flow-diagram" id="loop-intro-flow"></div>
       </div>
     </div>
@@ -297,23 +470,23 @@
   <!-- TEMPLATES -->
   <div class="page" id="page-templates">
     <div class="page-header">
-      <h2>📋 テンプレート集</h2>
+      <h2><span class="head-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>テンプレート集</h2>
       <p>よくある処理のフローをテンプレートとして用意しました。参考にワークフローを組んでください。</p>
     </div>
-    <div class="template-grid" id="template-grid"></div>
+    <div id="template-list"></div>
   </div>
 
   <!-- ERRORS -->
   <div class="page" id="page-errors">
     <div class="page-header">
-      <h2>🚨 エラー解決ガイド</h2>
+      <h2><span class="head-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>エラー解決ガイド</h2>
       <p>エラーメッセージを入力すると解決策を提案します</p>
     </div>
     <div class="error-search">
       <h3>エラーメッセージを入力してください</h3>
       <textarea id="error-input" placeholder="例: Execute failed: Input table's spec does not match…&#10;例: ERROR Column 'xxx' is not contained in the table&#10;例: java.lang.OutOfMemoryError"></textarea>
       <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="diagnoseError()">🔍 解決策を調べる</button>
+        <button class="btn btn-primary" onclick="diagnoseError()"><svg width="15" height="15" style="vertical-align:-2px;margin-right:5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>解決策を調べる</button>
         <button class="btn btn-ghost" onclick="clearError()">クリア</button>
       </div>
       <div id="error-result"></div>
@@ -348,7 +521,7 @@ const NODES = [
     ],
     example:{
       title:'売上データを読み込む場合',
-      code:`File: C:/data/sales_2024.csv\nColumn delimiter: , （カンマ）\nHas Column Header: ✅ ON\nEncoding: UTF-8\nLimit rows: 100（確認時のみ）`,
+      code:`File: C:/data/sales_2024.csv\nColumn delimiter: , （カンマ）\nHas Column Header: チェック✔︎ ON\nEncoding: UTF-8\nLimit rows: 100（確認時のみ）`,
       note:'Excelで保存したCSVが文字化けする場合はEncoding を「windows-31j」にしてみてください。'
     },
     tips:['文字化けする場合は「Encoding」をUTF-8またはShift_JISに設定','大きなファイルは「Limit rows」で先頭N行だけ読み込んで確認できる','「Autodetect format」ボタンで設定を自動検出できる'] },
@@ -365,7 +538,7 @@ const NODES = [
     ],
     example:{
       title:'加工済みデータを出力する場合',
-      code:`File: C:/output/result.csv\nColumn delimiter: ,\nWrite column header: ✅ ON\nIf file exists: Overwrite`,
+      code:`File: C:/output/result.csv\nColumn delimiter: ,\nWrite column header: チェック✔︎ ON\nIf file exists: Overwrite`,
       note:'ループ内で使う場合は「Append」にすると各ループ結果を1ファイルに追記できます。'
     },
     tips:['「Overwrite existing file」で上書き可否を制御','「Append to existing file」で追記モードに切り替え可'] },
@@ -384,7 +557,7 @@ const NODES = [
     ],
     example:{
       title:'「売上」シートを読み込む場合',
-      code:`File: C:/data/report.xlsx\nSheet selection: Sheet name\nSheet name: 売上\nHas Column Header: ✅ ON\nSkip first N rows: 2（タイトル行が2行ある場合）`,
+      code:`File: C:/data/report.xlsx\nSheet selection: Sheet name\nSheet name: 売上\nHas Column Header: チェック✔︎ ON\nSkip first N rows: 2（タイトル行が2行ある場合）`,
       note:'シート名が毎回変わる場合は「First sheet」を選択するか、ループとTable Row To Variableで動的に切り替えます。'
     },
     tips:['シート名が変わる場合は「First sheet」を選択','ヘッダ行が複数行ある場合は「Skip rows」で調整'] },
@@ -401,7 +574,7 @@ const NODES = [
     ],
     example:{
       title:'集計結果をExcelに出力する場合',
-      code:`File: C:/output/集計結果.xlsx\nSheet name: 月次集計\nIf file/sheet exists: Overwrite sheet\nWrite row key: ☐ OFF`,
+      code:`File: C:/output/集計結果.xlsx\nSheet name: 月次集計\nIf file/sheet exists: Overwrite sheet\nWrite row key: チェックなし OFF`,
       note:'行数が65,536を超えるデータは Excel Writer (XLS) ではなく Excel Writer (XLSX) ノードを使ってください。'
     },
     tips:['行数が65,536を超える場合はXLSX形式のノードを使う'] },
@@ -449,7 +622,7 @@ const NODES = [
     ],
     example:{
       title:'姓列と名列を結合して氏名列を作る場合',
-      code:`Expression: join($姓$, " ", $名$)\nNew column name: 氏名\nReplace column: ☐ OFF（新列として追加）\n\n▼ よく使う関数一覧\ntrim($col$)              → 前後の空白除去\nlowerCase($col$)         → 小文字に変換\nsubstr($col$, 0, 4)      → 先頭4文字を切り出し\nregexReplace($col$, "\\\\s+", "") → 空白を全削除`,
+      code:`Expression: join($姓$, " ", $名$)\nNew column name: 氏名\nReplace column: チェックなし OFF（新列として追加）\n\n▼ よく使う関数一覧\ntrim($col$)              → 前後の空白除去\nlowerCase($col$)         → 小文字に変換\nsubstr($col$, 0, 4)      → 先頭4文字を切り出し\nregexReplace($col$, "\\\\s+", "") → 空白を全削除`,
       note:'$列名$ の列名はスペースを含む場合も正確に入力してください。補完機能（Ctrl+Space）が使えます。'
     },
     tips:['upperCase() / lowerCase() で大文字小文字変換','trim() で前後の空白除去','substr($col$, 0, 3) で先頭3文字を取得'] },
@@ -482,7 +655,7 @@ const NODES = [
     ],
     example:{
       title:'ID・日付・金額の3列だけを残す場合',
-      code:`Include に移動:\n  customer_id\n  sale_date\n  amount\n\nExclude（削除）:\n  その他の全列\n\nEnforce Inclusion: ✅ ON（推奨）`,
+      code:`Include に移動:\n  customer_id\n  sale_date\n  amount\n\nExclude（削除）:\n  その他の全列\n\nEnforce Inclusion: チェック✔︎ ON（推奨）`,
       note:'列を選んで「>>」ボタンを押すとExcludeに移動します。「<< すべて」で全列をIncludeに戻せます。'
     },
     tips:['「Enforce Inclusion」をオンにすると、後から列が追加されても自動除外される'] },
@@ -499,7 +672,7 @@ const NODES = [
     ],
     example:{
       title:'単価×数量で売上金額を計算する場合',
-      code:`Expression: $単価$ * $数量$\nNew column name: 売上金額\nReplace column: ☐ OFF\n\n▼ 他の式の例\n$税抜$ * 1.1                     → 税込金額（10%）\nif($売上$ >= 10000, "A", "B")    → 条件分岐（文字はString Manip推奨）\nround($金額$ / 1000, 0) * 1000   → 千円未満切り捨て\nabs($差異$)                      → 絶対値`,
+      code:`Expression: $単価$ * $数量$\nNew column name: 売上金額\nReplace column: チェックなし OFF\n\n▼ 他の式の例\n$税抜$ * 1.1                     → 税込金額（10%）\nif($売上$ >= 10000, "A", "B")    → 条件分岐（文字はString Manip推奨）\nround($金額$ / 1000, 0) * 1000   → 千円未満切り捨て\nabs($差異$)                      → 絶対値`,
       note:'条件分岐で文字列を返したい場合はString Manipulation の if() を使うほうが型エラーを避けられます。'
     },
     tips:['NaN対策: isNaN($col$) で欠損値チェック','floor() / ceil() / round() で丸め処理'] },
@@ -584,7 +757,7 @@ const NODES = [
     ],
     example:{
       title:'金額が1万円以上の行だけを残す場合',
-      code:`Column to test: 金額\nFilter criteria: value in range\n  Use lower bound: ✅  Lower bound: 10000\n  Use upper bound: ☐ （上限なし）\nInclude rows that match criteria: ✅\n\n▼ 文字列フィルタ例\nColumn: region\nPattern: 東京.*   （正規表現で「東京」で始まる値）\nReg.Exp.: ✅ ON`,
+      code:`Column to test: 金額\nFilter criteria: value in range\n  Use lower bound: チェック✔︎  Lower bound: 10000\n  Use upper bound: チェックなし （上限なし）\nInclude rows that match criteria: チェック✔︎\n\n▼ 文字列フィルタ例\nColumn: region\nPattern: 東京.*   （正規表現で「東京」で始まる値）\nReg.Exp.: チェック✔︎ ON`,
       note:'2つ目の出力ポートに「マッチしない行」が出ます。条件を満たさないデータの確認や別処理に活用できます。'
     },
     tips:['2つの出力ポートで「条件に合う」と「合わない」に分岐できる','正規表現での部分一致フィルタも対応'] },
@@ -598,7 +771,7 @@ const NODES = [
     ],
     example:{
       title:'正常データと異常データに分岐する場合',
-      code:`Column: status_flag\nPattern: "OK"\nInclude rows that match: ✅\n\n→ 上の出力ポート: status = "OK" の正常行\n→ 下の出力ポート: それ以外の異常行\n\n（それぞれ別の処理フローに接続する）`,
+      code:`Column: status_flag\nPattern: "OK"\nInclude rows that match: チェック✔︎\n\n→ 上の出力ポート: status = "OK" の正常行\n→ 下の出力ポート: それ以外の異常行\n\n（それぞれ別の処理フローに接続する）`,
       note:'下流で2本の処理ラインを組む場合はRow Splitterを使うとワークフローが読みやすくなります。'
     },
     tips:['分岐処理の入口として使うと見やすい'] },
@@ -615,7 +788,7 @@ const NODES = [
     ],
     example:{
       title:'「東京」「大阪」「愛知」の行だけ残す場合',
-      code:`Column: 都道府県\n\nSelected values（チェック）:\n  ✅ 東京都\n  ✅ 大阪府\n  ✅ 愛知県\n  ☐ その他…\n\nInclude rows with selected values: ✅`,
+      code:`Column: 都道府県\n\nSelected values（チェック）:\n  チェック✔︎ 東京都\n  チェック✔︎ 大阪府\n  チェック✔︎ 愛知県\n  チェックなし その他…\n\nInclude rows with selected values: チェック✔︎`,
       note:'値一覧はノード設定を開いたとき自動取得されます。上流データが変わったら「Refresh」ボタンで再取得してください。'
     },
     tips:['大量の値から選ぶ場合はRow Filterの正規表現が便利'] },
@@ -664,7 +837,7 @@ const NODES = [
     ],
     example:{
       title:'1月〜3月の月次CSVを縦連結する場合',
-      code:`入力ポート1: January.csv\n入力ポート2: February.csv\n入力ポート3: March.csv\n（右クリック→Add portで3つにする）\n\nIf schemas differ: Fill with Missing Values\nAppend suffix to duplicate RowIDs: ✅ ON\n\n→ 3ファイルが縦に連結されて1テーブルになる`,
+      code:`入力ポート1: January.csv\n入力ポート2: February.csv\n入力ポート3: March.csv\n（右クリック→Add portで3つにする）\n\nIf schemas differ: Fill with Missing Values\nAppend suffix to duplicate RowIDs: チェック✔︎ ON\n\n→ 3ファイルが縦に連結されて1テーブルになる`,
       note:'ループ（Loop End）と組み合わせると、フォルダ内のファイルを自動的にすべて縦連結できます。'
     },
     tips:['列名が一致しない場合は「Fill with Missing Values」で対処','「Append suffix to duplicate RowIDs」で行ID重複を回避'] },
@@ -743,7 +916,7 @@ const NODES = [
     ],
     example:{
       title:'売上月の昇順・売上金額の降順で並べる場合',
-      code:`Sort criteria:\n  1位: 売上月    → Ascending（古い月から）\n  2位: 売上金額  → Descending（高い金額から）\n\n▼ Alphanumeric sortの例\n  「item1」「item2」…「item10」を正しい順に並べたい場合:\n  Alphanumeric sort: ✅ ON\n  （OFFだと文字列比較で item10 が item2 より前になってしまう）`,
+      code:`Sort criteria:\n  1位: 売上月    → Ascending（古い月から）\n  2位: 売上金額  → Descending（高い金額から）\n\n▼ Alphanumeric sortの例\n  「item1」「item2」…「item10」を正しい順に並べたい場合:\n  Alphanumeric sort: チェック✔︎ ON\n  （OFFだと文字列比較で item10 が item2 より前になってしまう）`,
       note:'複数条件は上から順に優先されます。追加した条件はドラッグで並び順を変えられます。'
     },
     tips:['「Alphanumeric sort」を有効にすると文字列の数字部分を数値として比較'] },
@@ -777,7 +950,7 @@ const NODES = [
     ],
     example:{
       title:'新規顧客データに購入予測を行う場合',
-      code:`入力1（上ポート）: Decision Tree Learnerの出力モデル\n入力2（下ポート）: 予測対象の顧客テーブル\n\nAppend class probabilities: ✅ ON\nPrediction column name: 購入予測\n\n→ 出力テーブルに追加される列:\n  購入予測（Yes/No）\n  P(Yes)（Yesの確率）\n  P(No)（Noの確率）`,
+      code:`入力1（上ポート）: Decision Tree Learnerの出力モデル\n入力2（下ポート）: 予測対象の顧客テーブル\n\nAppend class probabilities: チェック✔︎ ON\nPrediction column name: 購入予測\n\n→ 出力テーブルに追加される列:\n  購入予測（Yes/No）\n  P(Yes)（Yesの確率）\n  P(No)（Noの確率）`,
       note:'確率列を使って「P(Yes) > 0.7 の行だけに施策を打つ」などの閾値判断ができます。'
     },
     tips:['確率列を活用して閾値を調整できる'] },
@@ -870,7 +1043,7 @@ const NODES = [
     ],
     example:{
       title:'複数ファイルの読込結果を1テーブルに集約する場合',
-      code:`Row collection policy: Concatenate rows\nAdd iteration column: ✅ ON（デバッグ用）\n\n→ ループ1の結果（100行）\n→ ループ2の結果（120行）\n→ ループ3の結果（90行）\n─────────────────────\n→ Loop Endの出力: 310行（全部縦連結）\n   + Iteration列: 0, 0, ..., 1, 1, ..., 2, 2, ...`,
+      code:`Row collection policy: Concatenate rows\nAdd iteration column: チェック✔︎ ON（デバッグ用）\n\n→ ループ1の結果（100行）\n→ ループ2の結果（120行）\n→ ループ3の結果（90行）\n─────────────────────\n→ Loop Endの出力: 310行（全部縦連結）\n   + Iteration列: 0, 0, ..., 1, 1, ..., 2, 2, ...`,
       note:'「Add iteration column」はデバッグに便利ですが、最終出力が不要な場合はColumn Filterで削除してください。'
     },
     tips:['「Add iteration column」でどの反復の結果かを示す列を追加できる'] },
@@ -910,7 +1083,7 @@ const NODES = [
       {f:'Filter by extension', d:'特定拡張子のみ絞り込む。例: csv, xlsx'},
       {f:'Search recursively', d:'サブフォルダも再帰的にスキャンする場合はON。'},
     ],
-    example:{ title:'C:/dataフォルダのCSVファイル一覧を取得する場合', code:'Folder: C:/data\nFilter by extension: csv\nSearch recursively: ✅ ON\n\n→ 出力列: Path（絶対パス）, Name（ファイル名）, Size, Last Modified', note:'出力されるPath列をTable Row To Variable Loop Startに接続し、CSV Readerに変数を渡すとファイル一括処理が実現できます。' },
+    example:{ title:'C:/dataフォルダのCSVファイル一覧を取得する場合', code:'Folder: C:/data\nFilter by extension: csv\nSearch recursively: チェック✔︎ ON\n\n→ 出力列: Path（絶対パス）, Name（ファイル名）, Size, Last Modified', note:'出力されるPath列をTable Row To Variable Loop Startに接続し、CSV Readerに変数を渡すとファイル一括処理が実現できます。' },
     tips:['ファイルループの定番起点ノード','Sort後にTop-k Row Filterと組み合わせて最新N件だけ処理する使い方も有効'] },
 
   { id:'db-connector', name:'DB Connector', cat:'io', badge:'入出力', badgeCls:'badge-io',
@@ -934,7 +1107,7 @@ const NODES = [
       {f:'If table exists', d:'Append（追記）/ Truncate（全削除して書込）/ Fail（エラー停止）。'},
       {f:'Create table', d:'テーブルが存在しない場合に自動作成する場合はON。'},
     ],
-    example:{ title:'集計結果をDBに書き込む場合', code:'Table name: monthly_summary\nIf table exists: Truncate（毎回全削除して書き直す）\nCreate table: ✅ ON\n\n→ 入力ポート1: DB Connectorの接続\n→ 入力ポート2: GroupByなどの集計結果テーブル', note:'本番DBへの書き込みは必ずテスト環境で確認してから実行してください。Truncateは既存データを全削除します。' },
+    example:{ title:'集計結果をDBに書き込む場合', code:'Table name: monthly_summary\nIf table exists: Truncate（毎回全削除して書き直す）\nCreate table: チェック✔︎ ON\n\n→ 入力ポート1: DB Connectorの接続\n→ 入力ポート2: GroupByなどの集計結果テーブル', note:'本番DBへの書き込みは必ずテスト環境で確認してから実行してください。Truncateは既存データを全削除します。' },
     tips:['バッチ更新はBatch sizeを増やすと高速化できる','Transaction modeをAuto-commitにすると中断時でもロールバックされる'] },
 
   { id:'http-retriever', name:'HTTP Retriever', cat:'io', badge:'入出力', badgeCls:'badge-io',
@@ -994,7 +1167,7 @@ const NODES = [
       {f:'Replacement', d:'置換後の文字列。正規表現グループは $1 $2 で参照。'},
       {f:'Regular expression', d:'正規表現を使う場合はON。'},
     ],
-    example:{ title:'電話番号のハイフンを除去する場合', code:'Target column: 電話番号\nSearch string: -\nReplacement: （空白）\nRegular expression: ☐ OFF\n\n例: 03-1234-5678 → 0312345678\n\n▼ 正規表現で先頭の0を除去する例:\nSearch: ^0\nReplacement: +81\nRegular expression: ✅ ON', note:'文字列全体が検索パターンと一致する必要はありません。パターンが含まれる部分を置換します。' },
+    example:{ title:'電話番号のハイフンを除去する場合', code:'Target column: 電話番号\nSearch string: -\nReplacement: （空白）\nRegular expression: チェックなし OFF\n\n例: 03-1234-5678 → 0312345678\n\n▼ 正規表現で先頭の0を除去する例:\nSearch: ^0\nReplacement: +81\nRegular expression: チェック✔︎ ON', note:'文字列全体が検索パターンと一致する必要はありません。パターンが含まれる部分を置換します。' },
     tips:['単純な置換はString Replacerが最もシンプル','複数パターンを一括変換したい場合はCell Replacerが便利'] },
 
   { id:'string-to-number', name:'String To Number', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
@@ -1053,7 +1226,7 @@ const NODES = [
       {f:'Date&Time column', d:'抽出元の日時列を選択。'},
       {f:'抽出フィールド', d:'Year / Month / Day / Hour / Minute / Second / Day of week / Day of year / Week of year などをチェックで選択。'},
     ],
-    example:{ title:'売上日時から年・月・曜日を抽出する場合', code:'Column: 売上日時\n抽出チェック:\n  ✅ Year（年）\n  ✅ Month（月）\n  ✅ Day of week（曜日）\n\n→ 新列が追加される:\n  Year: 2024\n  Month: 3\n  Day of week: FRIDAY', note:'GroupByと組み合わせて「月別集計」「曜日別集計」などの時系列分析が簡単に行えます。' },
+    example:{ title:'売上日時から年・月・曜日を抽出する場合', code:'Column: 売上日時\n抽出チェック:\n  チェック✔︎ Year（年）\n  チェック✔︎ Month（月）\n  チェック✔︎ Day of week（曜日）\n\n→ 新列が追加される:\n  Year: 2024\n  Month: 3\n  Day of week: FRIDAY', note:'GroupByと組み合わせて「月別集計」「曜日別集計」などの時系列分析が簡単に行えます。' },
     tips:['曜日別売上分析はDay of week + GroupByの組み合わせが定番','四半期を出すには Math Formula で ceiling($Month$/3) を計算'] },
 
   { id:'row-id', name:'RowID', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
@@ -1064,7 +1237,7 @@ const NODES = [
       {f:'Replace RowID', d:'新しいRowIDの生成方法。連番（Row1, Row2...）/ 既存列の値を使う / カスタムプレフィックス+連番。'},
       {f:'Append column', d:'現在のRowIDを通常の列として追加する場合はONにして列名を入力。'},
     ],
-    example:{ title:'ループ処理後の行IDを連番に振り直す場合', code:'Replace RowID: ✅ ON\n  New RowID: Row (sequential)\n  Prefix: Row_\n\n→ RowID重複エラーを解消できる\n\n▼ 既存列をRowIDにする場合:\n  Replace RowID: ✅ ON\n  Use values from column: customer_id', note:'RowIDは「Row0」「Row1」...のような文字列です。CSVに出力すると1列目として書き出されます。' },
+    example:{ title:'ループ処理後の行IDを連番に振り直す場合', code:'Replace RowID: チェック✔︎ ON\n  New RowID: Row (sequential)\n  Prefix: Row_\n\n→ RowID重複エラーを解消できる\n\n▼ 既存列をRowIDにする場合:\n  Replace RowID: チェック✔︎ ON\n  Use values from column: customer_id', note:'RowIDは「Row0」「Row1」...のような文字列です。CSVに出力すると1列目として書き出されます。' },
     tips:['RowIDをソートキーとして使うことはできないのでSorterで別列を使う','ループ後のDuplicate RowIDエラーはこのノードで解決できる'] },
 
   { id:'transpose', name:'Transpose', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
@@ -1087,7 +1260,7 @@ const NODES = [
       {f:'New column name', d:'結合結果の列名。'},
       {f:'Delete included columns', d:'ONにすると結合に使った元列を削除する。'},
     ],
-    example:{ title:'都道府県と市区町村を結合して住所列を作る場合', code:'Include columns: 都道府県, 市区町村, 番地\nDelimiter: （空白 = 半角スペース）\nNew column name: 住所\nDelete included columns: ☐ OFF\n\n→ "東京都" + " " + "港区" + " " + "1-1-1"\n   = "東京都 港区 1-1-1"', note:'欠損値（Missing）が含まれる列は空文字として結合されます。欠損値対策はMissing Valueノードで先に処理してください。' },
+    example:{ title:'都道府県と市区町村を結合して住所列を作る場合', code:'Include columns: 都道府県, 市区町村, 番地\nDelimiter: （空白 = 半角スペース）\nNew column name: 住所\nDelete included columns: チェックなし OFF\n\n→ "東京都" + " " + "港区" + " " + "1-1-1"\n   = "東京都 港区 1-1-1"', note:'欠損値（Missing）が含まれる列は空文字として結合されます。欠損値対策はMissing Valueノードで先に処理してください。' },
     tips:['逆変換（1列→複数列に分割）はCell Splitterノード','String Manipulationのjoin()より直感的だが複雑な条件には対応できない'] },
 
   { id:'number-rounder', name:'Number Rounder', cat:'manip', badge:'データ加工', badgeCls:'badge-manip',
@@ -1204,7 +1377,7 @@ const NODES = [
       {f:'Target column', d:'頻度をカウントする列名。'},
       {f:'Sort by frequency', d:'頻度の降順でソートするかどうか。'},
     ],
-    example:{ title:'都道府県別の顧客数を確認する場合', code:'Target column: 都道府県\nSort by frequency: ✅ ON（多い順）\n\n→ 出力:\n  都道府県 | Count\n  東京都   | 3842\n  大阪府   | 1923\n  愛知県   | 1245\n  ...', note:'データの分布確認（EDA）の最初のステップとして非常に便利です。カテゴリ列には必ず使ってみてください。' },
+    example:{ title:'都道府県別の顧客数を確認する場合', code:'Target column: 都道府県\nSort by frequency: チェック✔︎ ON（多い順）\n\n→ 出力:\n  都道府県 | Count\n  東京都   | 3842\n  大阪府   | 1923\n  愛知県   | 1245\n  ...', note:'データの分布確認（EDA）の最初のステップとして非常に便利です。カテゴリ列には必ず使ってみてください。' },
     tips:['Statisticsノードで数値列の分布を確認、Value Counterでカテゴリ列の分布を確認するのがEDAの定番セット','異常に少ない値はデータ品質問題のサインかもしれない'] },
 
   { id:'auto-binner', name:'Auto-Binner', cat:'agg', badge:'集計', badgeCls:'badge-agg',
@@ -1293,7 +1466,7 @@ const NODES = [
       {f:'Append columns with class probabilities', d:'各クラスの予測確率列を追加する場合はON。'},
       {f:'Prediction column name', d:'予測結果列の列名（デフォルト: Prediction (列名)）。'},
     ],
-    example:{ title:'学習済みモデルで新規顧客の購入確率を予測する場合', code:'入力1: Random Forest Learnerのモデル出力\n入力2: 新規顧客テーブル（同じ特徴量列が必要）\n\nAppend class probabilities: ✅ ON\n\n→ 出力列:\n  Prediction: "Yes"/"No"\n  P(Yes): 0.82（購入確率82%）\n  P(No): 0.18', note:'予測に使う特徴量列の名前・型が学習データと完全に一致している必要があります。一致しない場合はExecute failedエラーになります。' },
+    example:{ title:'学習済みモデルで新規顧客の購入確率を予測する場合', code:'入力1: Random Forest Learnerのモデル出力\n入力2: 新規顧客テーブル（同じ特徴量列が必要）\n\nAppend class probabilities: チェック✔︎ ON\n\n→ 出力列:\n  Prediction: "Yes"/"No"\n  P(Yes): 0.82（購入確率82%）\n  P(No): 0.18', note:'予測に使う特徴量列の名前・型が学習データと完全に一致している必要があります。一致しない場合はExecute failedエラーになります。' },
     tips:['確率値を使った閾値調整でPrecision/Recallのバランスを調整できる'] },
 
   { id:'logistic-regression-learner', name:'Logistic Regression Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
@@ -1327,7 +1500,7 @@ const NODES = [
       {f:'Feature columns', d:'予測に使う特徴量列。デフォルトは全数値列。'},
       {f:'Include constant term', d:'切片（定数項）を含む場合はON（通常ON）。'},
     ],
-    example:{ title:'広告費から売上を予測するモデルを作る場合', code:'Target column: 売上金額\nFeature columns: TV広告費, ネット広告費, 販促費\nInclude constant: ✅ ON\n\n→ 係数テーブル出力（例）:\n  切片: 500000\n  TV広告費: 8.3（1万円増やすと8.3万円売上増）\n  ネット広告費: 12.1\n  販促費: 5.6', note:'特徴量間の多重共線性がある場合（相関が高い特徴量が複数）は係数が不安定になります。VIF（分散拡大係数）で確認してください。' },
+    example:{ title:'広告費から売上を予測するモデルを作る場合', code:'Target column: 売上金額\nFeature columns: TV広告費, ネット広告費, 販促費\nInclude constant: チェック✔︎ ON\n\n→ 係数テーブル出力（例）:\n  切片: 500000\n  TV広告費: 8.3（1万円増やすと8.3万円売上増）\n  ネット広告費: 12.1\n  販促費: 5.6', note:'特徴量間の多重共線性がある場合（相関が高い特徴量が複数）は係数が不安定になります。VIF（分散拡大係数）で確認してください。' },
     tips:['係数の解釈でビジネス的なインサイトが得られる','非線形関係には木系モデルやポリノミアル特徴量追加が必要'] },
 
   { id:'linear-regression-predictor', name:'Linear Regression Predictor', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
@@ -1371,7 +1544,7 @@ const NODES = [
       {f:'Number of folds', d:'分割数（K）。通常5〜10。'},
       {f:'Stratified sampling', d:'層別分割（クラス比率を保つ）する場合はON。分類問題では推奨。'},
     ],
-    example:{ title:'5-Fold クロスバリデーションを行う場合', code:'Number of folds: 5\nStratified: ✅ ON\n\nワークフロー構成:\n  X-Partitioner\n    → Decision Tree Learner（学習ポート）\n    → Decision Tree Predictor + Scorer\n  X-Aggregator（評価結果の集約）\n\n→ 5回の平均Accuracyが最終評価値', note:'X-PartitionerとX-AggregatorはLoopではなく専用の「クロスバリデーションループ」を形成します。Loop EndではなくX-Aggregatorを使ってください。' },
+    example:{ title:'5-Fold クロスバリデーションを行う場合', code:'Number of folds: 5\nStratified: チェック✔︎ ON\n\nワークフロー構成:\n  X-Partitioner\n    → Decision Tree Learner（学習ポート）\n    → Decision Tree Predictor + Scorer\n  X-Aggregator（評価結果の集約）\n\n→ 5回の平均Accuracyが最終評価値', note:'X-PartitionerとX-AggregatorはLoopではなく専用の「クロスバリデーションループ」を形成します。Loop EndではなくX-Aggregatorを使ってください。' },
     tips:['X-PartitionerはLoop Startの代わり、X-AggregatorはLoop Endの代わりとして機能する'] },
 
   { id:'gradient-boosted-trees', name:'Gradient Boosted Trees Learner', cat:'ml', badge:'機械学習', badgeCls:'badge-ml',
@@ -1715,6 +1888,234 @@ const TEMPLATES = [
       {label:'CSV Writer×2', cls:'io'},
     ],
     tips:['Statisticsで平均・標準偏差を取得','Math Formulaで(x-mean)/stdを計算','Row Splitterで|Z|>3の行を外れ値として分離'] },
+
+  { name:'重複行の除去とユニーク化', category:'データ品質',
+    desc:'同一データの重複を検出して除去し、ユニークな行だけを残す',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Duplicate Row Filter', cls:'proc'},
+      {label:'Sorter', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['Duplicate Row Filterで重複判定する列を指定','「Keep first/last」で残す行を選択','重複の件数を残したい場合はGroupBy（Count）を併用'] },
+
+  { name:'ピボットテーブルでクロス集計', category:'集計',
+    desc:'行カテゴリ×列カテゴリのクロス集計表（マトリクス）を作成する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Pivoting', cls:'proc'},
+      {label:'Column Rename', cls:'proc'},
+      {label:'Excel Writer', cls:'io'},
+    ],
+    tips:['Group列を行、Pivot列を列、Aggregation列を集計値に設定','売上を「地域×月」で集計するなどに最適','欠損セルはMissing Valueで0埋め'] },
+
+  { name:'複数キーでのテーブル結合', category:'結合',
+    desc:'2つの列の組み合わせ（複合キー）で正確にテーブルを結合する',
+    nodes:[
+      {label:'CSV Reader（明細）', cls:'io'},
+      {label:'CSV Reader（マスタ）', cls:'io'},
+      {label:'Joiner（複合キー）', cls:'proc'},
+      {label:'Column Filter', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['Joinerの結合条件に「店舗ID＋商品ID」など複数列を指定','Inner/Left/Full Joinを目的に応じて選択','結合後に不要列をColumn Filterで除去'] },
+
+  { name:'データベース抽出とレポート', category:'データベース',
+    desc:'DBにSQLで接続してデータを抽出し、集計してExcel出力する',
+    nodes:[
+      {label:'DB Connector', cls:'io'},
+      {label:'DB Query Reader', cls:'io'},
+      {label:'GroupBy', cls:'proc'},
+      {label:'Sorter', cls:'proc'},
+      {label:'Excel Writer', cls:'io'},
+    ],
+    tips:['DB Connectorで接続情報を一元管理','大量データはDB側でWHERE絞り込みしてから取得','集計はGroupByでSum/Count/Mean'] },
+
+  { name:'売上ダッシュボード（可視化）', category:'可視化',
+    desc:'集計結果を棒グラフ・折れ線で可視化してビューを作成する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'GroupBy', cls:'proc'},
+      {label:'Bar Chart', cls:'proc'},
+      {label:'Line Plot', cls:'proc'},
+    ],
+    tips:['GroupByで月別・カテゴリ別に集計してから可視化','Bar Chartはカテゴリ比較、Line Plotは時系列推移に','各ビューは右クリック→Open viewで表示'] },
+
+  { name:'時系列の移動平均と可視化', category:'時系列',
+    desc:'日付でソートし、移動平均で平滑化してトレンドを可視化する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'String to Date&Time', cls:'proc'},
+      {label:'Sorter（日付昇順）', cls:'proc'},
+      {label:'Moving Aggregation', cls:'proc'},
+      {label:'Line Plot', cls:'proc'},
+    ],
+    tips:['移動平均の前に必ず日付でソート','Window sizeで平滑化の強さを調整（例:7日）','元データと移動平均を重ねて表示すると効果的'] },
+
+  { name:'テキストの単語頻度カウント', category:'テキスト',
+    desc:'文章を単語に分割し、出現頻度をランキング化する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Cell Splitter（空白区切り）', cls:'proc'},
+      {label:'Ungroup', cls:'proc'},
+      {label:'Value Counter', cls:'proc'},
+      {label:'Bar Chart', cls:'proc'},
+    ],
+    tips:['Cell Splitterでスペースやカンマでトークン化','Ungroupでリストを縦に展開','Value Counterで頻度集計、Bar Chartで上位語を表示'] },
+
+  { name:'線形回帰で数値予測', category:'機械学習',
+    desc:'特徴量から数値（売上・価格など）を予測する回帰モデルを構築する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Partitioning（7:3）', cls:'proc'},
+      {label:'Linear Regression Learner', cls:'proc'},
+      {label:'Regression Predictor', cls:'proc'},
+      {label:'Numeric Scorer', cls:'end'},
+    ],
+    tips:['Partitioningで学習・テストに分割','係数テーブルで各特徴量の影響度を確認','Numeric ScorerでR²・RMSE・MAEを評価'] },
+
+  { name:'顧客のクラスタリング', category:'機械学習',
+    desc:'k-Meansで顧客を似たグループに自動分類し、散布図で確認する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Normalizer', cls:'proc'},
+      {label:'k-Means', cls:'proc'},
+      {label:'Scatter Plot', cls:'proc'},
+    ],
+    tips:['距離計算のため事前にNormalizerで標準化必須','k（クラスタ数）はエルボー法などで決定','Scatter Plotでクラスタの分離具合を確認'] },
+
+  { name:'REST APIからデータ取得', category:'Web/API',
+    desc:'APIをHTTPで呼び出し、JSONレスポンスを解析してテーブル化する',
+    nodes:[
+      {label:'HTTP Retriever', cls:'io'},
+      {label:'JSON Path', cls:'proc'},
+      {label:'Ungroup', cls:'proc'},
+      {label:'Table View', cls:'proc'},
+    ],
+    tips:['認証が必要なAPIはヘッダにトークンを設定','JSON Pathで必要な配列・項目を抽出','レート制限があればChunk Loop＋Waitで対策'] },
+
+  { name:'欠損値・データ品質チェック', category:'データ品質',
+    desc:'各列の統計量と欠損状況を確認し、品質レポートを作成する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Data Explorer', cls:'proc'},
+      {label:'Missing Value', cls:'proc'},
+      {label:'Table View', cls:'proc'},
+    ],
+    tips:['Data Explorerで欠損率・型・分布を一括確認','欠損は列ごとに平均/中央値/固定値で補完','補完後に件数が変わっていないか検証'] },
+
+  { name:'条件分岐ワークフロー', category:'フロー制御',
+    desc:'フラグやデータ件数に応じて処理ルートを自動で切り替える',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'IF Switch', cls:'proc'},
+      {label:'処理A / 処理B', cls:'proc'},
+      {label:'End IF', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['Boolean型フロー変数でTrue/Falseの2分岐','3分岐以上はCase Switchを使用','必ずEnd IFで合流させてから後続に接続'] },
+
+  { name:'文字コード混在ファイルの統一読込', category:'前処理',
+    desc:'Shift_JISとUTF-8が混在するCSV群を正しく読み込んで統一する',
+    nodes:[
+      {label:'List Files', cls:'io'},
+      {label:'Row Loop Start', cls:'loop'},
+      {label:'CSV Reader（Encoding指定）', cls:'io'},
+      {label:'Loop End', cls:'loop'},
+      {label:'CSV Writer（UTF-8）', cls:'io'},
+    ],
+    tips:['日本語CSVはEncodingをUTF-8またはShift_JIS（windows-31j）に','文字化けする場合はEncodingを切り替えて再読込','出力は将来の互換性のためUTF-8推奨'] },
+
+  { name:'列の型を一括変換', category:'前処理',
+    desc:'文字列で読み込まれた数値・日付列をまとめて適切な型に変換する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'String to Number', cls:'proc'},
+      {label:'String to Date&Time', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['Excel由来データは数値が文字列になりがち','変換エラー時は「Set to missing」で欠損化','日付は元のフォーマット文字列を正しく指定'] },
+
+  { name:'縦横変換（Unpivot）', category:'前処理',
+    desc:'横持ちデータ（月列が横並び）を縦持ち（1行1値）に変換する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Unpivoting', cls:'proc'},
+      {label:'Column Rename', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['1月〜12月が列で並ぶ表を「年月・値」の縦形式へ','縦持ちはGroupByや可視化で扱いやすい','逆変換はPivotingノード'] },
+
+  { name:'カテゴリ変数のダミー変数化', category:'機械学習',
+    desc:'文字列カテゴリ列を機械学習で使える0/1のダミー列に展開する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'One to Many', cls:'proc'},
+      {label:'Column Filter', cls:'proc'},
+      {label:'Table View', cls:'proc'},
+    ],
+    tips:['One to Manyで「地域」→「地域_東京」「地域_大阪」等に展開','多くのモデルは数値入力が前提のため必須の前処理','カテゴリ数が多すぎる列は事前に集約を検討'] },
+
+  { name:'ランダムフォレストで高精度分類', category:'機械学習',
+    desc:'決定木より過学習に強いアンサンブルモデルで分類する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Partitioning', cls:'proc'},
+      {label:'Random Forest Learner', cls:'proc'},
+      {label:'Random Forest Predictor', cls:'proc'},
+      {label:'Scorer', cls:'end'},
+    ],
+    tips:['まずはデフォルト設定で試すのがおすすめ','木の本数を増やすと安定するが学習時間が増加','特徴量重要度でどの列が効いているか確認'] },
+
+  { name:'クロスバリデーションで頑健に評価', category:'機械学習',
+    desc:'データをK分割して複数回学習・評価し、平均精度で安定評価する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'X-Partitioner', cls:'loop'},
+      {label:'Learner + Predictor', cls:'proc'},
+      {label:'X-Aggregator', cls:'loop'},
+      {label:'Scorer', cls:'end'},
+    ],
+    tips:['X-PartitionerとX-Aggregatorは対で使う','5〜10分割が一般的','1回の分割評価より信頼性の高い精度が得られる'] },
+
+  { name:'相関分析でデータ理解', category:'可視化',
+    desc:'数値列同士の相関を計算し、ヒートマップで関係性を把握する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Linear Correlation', cls:'proc'},
+      {label:'Heatmap', cls:'proc'},
+    ],
+    tips:['相関の高い特徴量ペアを発見できる','多重共線性のチェックにも有効','相関≠因果である点に注意'] },
+
+  { name:'ヒストグラムで分布確認', category:'可視化',
+    desc:'数値データの分布形状を確認し、偏りや外れ値を発見する',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Data Explorer', cls:'proc'},
+      {label:'Histogram', cls:'proc'},
+    ],
+    tips:['正規分布か歪んでいるかを視覚的に確認','右に裾が長い場合は対数変換を検討','EDA（探索的データ分析）の基本ステップ'] },
+
+  { name:'グループ別ファイル分割出力', category:'ループ',
+    desc:'カテゴリごとにデータを分け、別々のファイルに書き出す',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'Group Loop Start', cls:'loop'},
+      {label:'CSV Writer（変数パス）', cls:'io'},
+      {label:'Loop End', cls:'loop'},
+    ],
+    tips:['Group Loop Startでカテゴリ列を指定','出力パスにフロー変数を使い「店舗名.csv」等で分割','店舗別・月別レポートの自動生成に便利'] },
+
+  { name:'住所・氏名の名寄せ', category:'データ品質',
+    desc:'表記ゆれのあるデータを正規化し、同一人物・企業を突き合わせる',
+    nodes:[
+      {label:'CSV Reader', cls:'io'},
+      {label:'String Manipulation（正規化）', cls:'proc'},
+      {label:'String Similarity', cls:'proc'},
+      {label:'Row Filter（閾値）', cls:'proc'},
+      {label:'CSV Writer', cls:'io'},
+    ],
+    tips:['全角半角・空白・記号をString Manipulationで統一','String Similarityで類似度スコアを計算','閾値を超えるペアを同一とみなして名寄せ'] },
 ];
 
 const ERRORS = [
@@ -1838,6 +2239,7 @@ let currentCat = 'all';
 // ==================== INIT ====================
 window.onload = function() {
   renderNodes();
+  renderGlossary();
   renderLoops();
   renderTemplates();
   renderCommonErrors();
@@ -1853,6 +2255,21 @@ window.onload = function() {
     {cls:'loop',label:'Loop Start'},{cls:'proc',label:'処理A'},
     {cls:'proc',label:'処理B'},{cls:'loop',label:'Loop End'}
   ].map((n,i,a)=>`<span class="flow-node ${n.cls}">${FLOW_ICONS[n.cls]||''}${n.label}</span>${i<a.length-1?'<span class="flow-arrow">→</span>':''}`).join('');
+  // KNIMEでできること（ライフサイクル＋能力タイル）
+  const lc = document.getElementById('home-lifecycle');
+  if(lc) lc.innerHTML = [
+    {cat:'io',label:'取り込む'},{cat:'manip',label:'加工する'},{cat:'agg',label:'分析する'},
+    {cat:'viz',label:'可視化する'},{cat:'ml',label:'機械学習'},{cat:'loop',label:'自動化'}
+  ].map((s,i,a)=>`<span class="lc-step"><span class="lc-ic">${ICONS[s.cat]||''}</span>${s.label}</span>${i<a.length-1?'<span class="lc-arrow">→</span>':''}`).join('');
+  const caps = document.getElementById('home-capabilities');
+  if(caps) caps.innerHTML = [
+    {cat:'io',  t:'データを集める',   d:'CSV・Excel・データベース・Web APIなど、あらゆる場所のデータを読み込めます。'},
+    {cat:'manip',t:'加工・整える',     d:'欠損値の補完、結合、型変換、クレンジングをドラッグ操作で行えます。'},
+    {cat:'agg', t:'分析・集計する',   d:'グループ集計や統計量の算出で、データの傾向を深く理解できます。'},
+    {cat:'viz', t:'可視化する',       d:'棒グラフ・折れ線・散布図など、対話的なグラフやレポートを作成できます。'},
+    {cat:'ml',  t:'機械学習・AI',     d:'予測・分類・クラスタリングのモデルを、構築から評価まで行えます。'},
+    {cat:'loop',t:'自動化・共有する', d:'処理をワークフロー化して繰り返しを自動化し、再利用・共有もできます。'}
+  ].map(c=>`<div class="cap-item"><div class="node-icon-box icon-${c.cat}">${ICONS[c.cat]||''}</div><div><div class="cap-title">${c.t}</div><div class="cap-desc">${c.d}</div></div></div>`).join('');
 };
 
 // ==================== PAGES ====================
@@ -1860,7 +2277,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const mapping = {home:0, nodes:1, loops:2, templates:3, errors:4};
+  const mapping = {home:0, terms:1, nodes:2, loops:3, templates:4, errors:5};
   const items = document.querySelectorAll('.nav-item');
   if (mapping[id] !== undefined) items[mapping[id]].classList.add('active');
 }
@@ -1913,18 +2330,26 @@ function nodeCardHTML(n) {
         <span class="expand-toggle" id="toggle-${n.id}">▼ 詳細</span>
       </div>
       <div class="expand-content" id="detail-${n.id}">
-        ${n.ports.in.length || n.ports.out.length ? `
-        <div style="margin-bottom:.75rem">
-          ${n.ports.in.length ? `<div style="margin-bottom:.3rem;font-size:.78rem;color:var(--text-muted);font-weight:600">入力ポート</div>
-          <div class="port-row">${n.ports.in.map(p=>`<span class="port-tag port-in">${p}</span>`).join('')}</div>` : ''}
-          ${n.ports.out.length ? `<div style="margin:.4rem 0 .3rem;font-size:.78rem;color:var(--text-muted);font-weight:600">出力ポート</div>
-          <div class="port-row">${n.ports.out.map(p=>`<span class="port-tag port-out">${p}</span>`).join('')}</div>` : ''}
-        </div>` : ''}
+        <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem"><svg width="13" height="13" style="vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="7 8 3 12 7 16"/><polyline points="17 8 21 12 17 16"/></svg>入出力イメージ</div>
+        <div class="node-diagram">
+          <div class="nd-ports">
+            ${n.ports.in.length ? n.ports.in.map(p=>`<span class="nd-port in">▸ ${p}</span>`).join('') : '<span class="nd-none">入力なし</span>'}
+          </div>
+          <span class="nd-arrow">→</span>
+          <div class="nd-box">
+            <span class="nd-icon">${ICONS[n.cat]||''}</span>
+            <span class="nd-name">${n.name}</span>
+          </div>
+          <span class="nd-arrow">→</span>
+          <div class="nd-ports">
+            ${n.ports.out.length ? n.ports.out.map(p=>`<span class="nd-port out">${p} ▸</span>`).join('') : '<span class="nd-none">出力なし</span>'}
+          </div>
+        </div>
         <p style="font-size:.875rem;margin-bottom:.75rem">${n.detail}</p>
 
         ${n.config && n.config.length ? `
         <div style="margin-bottom:1rem">
-          <div style="font-size:.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">⚙️ 設定項目</div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem"><svg width="13" height="13" style="vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>設定項目</div>
           <table style="width:100%;border-collapse:collapse;font-size:.82rem">
             ${n.config.map(c=>`
             <tr style="border-top:1px solid var(--border)">
@@ -1936,12 +2361,12 @@ function nodeCardHTML(n) {
 
         ${n.example ? `
         <div style="background:#f8faff;border:1px solid #c7d7f8;border-radius:8px;padding:.875rem 1rem;margin-bottom:.75rem">
-          <div style="font-size:.78rem;font-weight:700;color:#1e40af;margin-bottom:.5rem">📝 入力例 — ${n.example.title}</div>
+          <div style="font-size:.78rem;font-weight:700;color:#1e40af;margin-bottom:.5rem"><svg width="13" height="13" style="vertical-align:-2px;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>入力例 — ${n.example.title}</div>
           <pre style="font-size:.78rem;font-family:Consolas,monospace;background:#fff;border:1px solid #dbeafe;border-radius:6px;padding:.6rem .875rem;margin:.25rem 0 .5rem;overflow-x:auto;white-space:pre-wrap;line-height:1.7;color:#1e293b">${n.example.code}</pre>
-          ${n.example.note ? `<div style="font-size:.78rem;color:#374151;background:#fffbeb;border-left:3px solid #f59e0b;padding:.35rem .6rem;border-radius:0 4px 4px 0">⚠️ ${n.example.note}</div>` : ''}
+          ${n.example.note ? `<div style="font-size:.78rem;color:#374151;background:#fffbeb;border-left:3px solid #f59e0b;padding:.35rem .6rem;border-radius:0 4px 4px 0"><svg width="13" height="13" style="vertical-align:-2px;margin-right:3px" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>${n.example.note}</div>` : ''}
         </div>` : ''}
 
-        ${n.tips && n.tips.length ? `<ul style="font-size:.82rem;padding-left:1.25rem;color:var(--text-muted)">${n.tips.map(t=>`<li style="margin-bottom:.25rem">💡 ${t}</li>`).join('')}</ul>` : ''}
+        ${n.tips && n.tips.length ? `<ul style="font-size:.82rem;list-style:none;padding-left:0;color:var(--text-muted)">${n.tips.map(t=>`<li style="margin-bottom:.3rem;display:flex;gap:.4rem;align-items:flex-start"><svg width="13" height="13" style="flex-shrink:0;margin-top:3px" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.5.4.8 1 .9 1.6h6.2c.1-.6.4-1.2.9-1.6A7 7 0 0 0 12 2z"/></svg><span>${t}</span></li>`).join('')}</ul>` : ''}
       </div>
     </div>
   `;
@@ -1981,14 +2406,14 @@ function renderLoops() {
         <div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem;color:var(--text-muted)">設定手順</div>
         <ol class="steps">${l.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
       </div>
-      ${l.note ? `<div style="margin-top:.75rem;padding:.6rem .875rem;background:var(--warn-light);border-radius:6px;font-size:.8rem;color:#92400e">⚠️ ${l.note}</div>` : ''}
+      ${l.note ? `<div style="margin-top:.75rem;padding:.6rem .875rem;background:var(--warn-light);border-radius:6px;font-size:.8rem;color:#92400e;display:flex;gap:.4rem;align-items:flex-start"><svg width="14" height="14" style="flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>${l.note}</span></div>` : ''}
     </div>
   `).join('');
 }
 
 // ==================== TEMPLATES ====================
-function renderTemplates() {
-  document.getElementById('template-grid').innerHTML = TEMPLATES.map(t => `
+function templateCardHTML(t) {
+  return `
     <div class="template-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem">
         <span class="card-badge" style="background:var(--primary-light);color:var(--primary)">${t.category}</span>
@@ -2000,15 +2425,154 @@ function renderTemplates() {
       </div>
       <ul style="font-size:.78rem;color:var(--text-muted);padding-left:1.1rem;margin-top:.5rem">${t.tips.map(tip=>`<li style="margin-bottom:.2rem">${tip}</li>`).join('')}</ul>
     </div>
-  `).join('');
+  `;
+}
+
+function renderTemplates() {
+  // カテゴリの表示順（初心者の学習順を意識）
+  const TMPL_CAT_ORDER = ['前処理','データ品質','結合','集計','可視化','時系列','テキスト','データベース','Web/API','機械学習','ループ','フロー制御'];
+  const cats = [...new Set(TEMPLATES.map(t => t.category))]
+    .sort((a,b) => TMPL_CAT_ORDER.indexOf(a) - TMPL_CAT_ORDER.indexOf(b));
+
+  let html = '';
+  cats.forEach(cat => {
+    const items = TEMPLATES.filter(t => t.category === cat);
+    html += `<div class="cat-section-header"><span class="cat-section-title">${cat}</span><span class="cat-section-count">${items.length}件</span></div>`;
+    html += `<div class="template-grid">${items.map(templateCardHTML).join('')}</div>`;
+  });
+  document.getElementById('template-list').innerHTML = html;
+}
+
+// ==================== GLOSSARY（基本用語） ====================
+const GLOSSARY = [
+  // 基本のしくみ
+  { group:'基本のしくみ', term:'ノード', en:'Node',
+    desc:'KNIMEの最小単位。1つの処理（読み込み・加工・分析など）を担当する四角いブロックです。これを並べてつなぐだけで処理を組み立てられます。',
+    ex:'たとえると、工場のラインにある「1台の作業マシン」。1ノード＝1仕事です。' },
+  { group:'基本のしくみ', term:'ワークフロー', en:'Workflow',
+    desc:'ノードを線でつないだ処理全体の流れのこと。料理のレシピや作業手順書のようなもので、保存して何度でも再実行できます。',
+    ex:'「データ読込 → 絞り込み → 集計 → 出力」という一連の流れがワークフローです。' },
+  { group:'基本のしくみ', term:'ポート', en:'Port',
+    desc:'ノードの左右にある接続口。左側が入力（データを受け取る）、右側が出力（結果を渡す）です。三角形のポートはデータテーブルを表します。',
+    ex:'コンセントの差込口のようなもの。出力ポートと入力ポートを線でつなぎます。' },
+  { group:'基本のしくみ', term:'接続（コネクション）', en:'Connection',
+    desc:'あるノードの出力ポートと、次のノードの入力ポートを結ぶ線。この線に沿ってデータが上流から下流へ流れます。',
+    ex:'線をドラッグして引くだけ。データの「通り道」を作るイメージです。' },
+
+  // データの構造
+  { group:'データの構造', term:'データテーブル', en:'Data Table',
+    desc:'KNIMEで扱うデータの基本の形。Excelのような行と列の表で、ノードからノードへ流れていく主役です。',
+    ex:'ほとんどのノードはこの表を受け取って、加工した表を出力します。' },
+  { group:'データの構造', term:'列と行', en:'Column / Row',
+    desc:'列＝項目（名前・年齢・売上など縦のまとまり）、行＝1件分のデータ（1人分・1取引分など横のまとまり）です。',
+    ex:'「100人分の名簿」なら、列＝名前/年齢/住所、行＝1人ずつの100行。' },
+  { group:'データの構造', term:'行ID', en:'RowID',
+    desc:'各行につく固有の見出し（Row0, Row1…）。行を識別するための名前です。重複するとエラーになることがあり、RowIDノードで振り直せます。',
+    ex:'表の一番左にある「行の名札」。ループ処理後に重複しやすいので注意。' },
+  { group:'データの構造', term:'データ型', en:'Data Type',
+    desc:'値の種類のこと。String（文字列）/ Integer（整数）/ Double（小数）/ Date&Time（日時）/ Boolean（真偽）などがあります。型が合わないと計算できません。',
+    ex:'「123」が数値か文字列かで扱いが変わります。Excel由来データは数値が文字列になりがち。' },
+  { group:'データの構造', term:'欠損値', en:'Missing Value',
+    desc:'値が空っぽのセル（「?」と表示されます）。集計や機械学習でエラーの原因になるため、補完（平均値などで埋める）や除去で対処します。',
+    ex:'アンケートの未回答欄のようなもの。Missing Valueノードで対処します。' },
+
+  // 操作・実行
+  { group:'操作・実行', term:'設定ダイアログ', en:'Configuration',
+    desc:'ノードをダブルクリックすると開く設定画面。読み込むファイルや絞り込み条件など、そのノードの動作を指定します。',
+    ex:'設定が未完了だとノードは赤信号のまま。まずここを開いて設定します。' },
+  { group:'操作・実行', term:'実行状態（信号機）', en:'Traffic Light',
+    desc:'各ノードの下にある赤・黄・緑のランプ。赤＝未設定、黄＝実行待ち（設定済み）、緑＝実行完了を表します。',
+    ex:'信号機が緑になれば、そのノードの処理は成功して結果が出ています。' },
+  { group:'操作・実行', term:'ノードリポジトリ', en:'Node Repository',
+    desc:'画面の隅にある、使える全ノードの一覧パレット。ここから名前で検索し、ドラッグして作業エリアに配置します。',
+    ex:'「道具箱」のようなもの。欲しい処理を検索して取り出します。' },
+  { group:'操作・実行', term:'ワークスペース', en:'Workspace',
+    desc:'ワークフローや設定が保存されるフォルダ。KNIME起動時に選ぶ「作業場所」です。',
+    ex:'作ったワークフローはすべてこのフォルダ内に保存されます。' },
+
+  // 便利な機能
+  { group:'便利な機能', term:'フロー変数', en:'Flow Variable',
+    desc:'ノードの設定値を動的に渡すための変数。ファイル名や条件をループで切り替えるときに使います。設定欄では ${変数名}$ の形で参照します。',
+    ex:'「読み込むファイル名」を毎回変えたいときなどに活躍します。' },
+  { group:'便利な機能', term:'ループ', en:'Loop',
+    desc:'同じ処理を繰り返すしくみ。Loop Start（入口）とLoop End（出口）で処理を挟みます。複数ファイルの一括処理などに必須です。',
+    ex:'「フォルダ内の全CSVを順番に読み込む」といった繰り返しに使います。' },
+  { group:'便利な機能', term:'メタノード', en:'Metanode',
+    desc:'複数のノードを1つにまとめて見た目を整理する「フォルダ」のような箱。中身はそのまま実行されます。',
+    ex:'前処理の10ノードを1つの箱にまとめると、ワークフローがスッキリします。' },
+  { group:'便利な機能', term:'コンポーネント', en:'Component',
+    desc:'メタノードの強化版。独自の設定画面やビューを持たせられ、再利用や共有がしやすい「部品」です。',
+    ex:'よく使う処理を部品化して、他のワークフローでも使い回せます。' },
+
+  // 機械学習・共有
+  { group:'機械学習・共有', term:'Learner と Predictor', en:'学習器・予測器',
+    desc:'Learnerがデータから法則（モデル）を「学習」し、Predictorがそのモデルを使って新しいデータを「予測」します。必ずセットで使います。',
+    ex:'Learner＝勉強する人、Predictor＝勉強した内容で問題を解く人。' },
+  { group:'機械学習・共有', term:'パーティショニング', en:'Partitioning',
+    desc:'データを学習用とテスト用に分けること。モデルの本当の実力を測るために欠かせない前処理です（例：7:3に分割）。',
+    ex:'テスト問題を事前に見せずに実力を測るのと同じ考え方です。' },
+  { group:'機械学習・共有', term:'KNIME Hub', en:'KNIME Hub',
+    desc:'公式のオンライン共有サイト。ノードや拡張機能、サンプルワークフローを検索してダウンロードできます。',
+    ex:'やりたい処理のサンプルを探して、自分の環境に取り込めます。' },
+];
+
+// 用語ごとのオリジナルSVGイラスト（公式素材は不使用・すべて独自作成）
+const GLOSSARY_FIG = {
+  'ノード':'<svg viewBox="0 0 150 90"><line x1="20" y1="45" x2="35" y2="45" stroke="var(--text-muted)" stroke-width="2"/><line x1="115" y1="45" x2="130" y2="45" stroke="var(--text-muted)" stroke-width="2"/><circle cx="35" cy="45" r="4" fill="#16a34a"/><circle cx="115" cy="45" r="4" fill="#1d4ed8"/><rect x="45" y="28" width="60" height="34" rx="6" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><circle cx="58" cy="72" r="4" fill="#dc2626"/><circle cx="70" cy="72" r="4" fill="#eab308"/><circle cx="82" cy="72" r="4" fill="#16a34a"/></svg>',
+  'ワークフロー':'<svg viewBox="0 0 150 90"><g stroke="var(--text-muted)" stroke-width="2"><line x1="40" y1="47" x2="58" y2="47"/><line x1="92" y1="47" x2="110" y2="47"/></g><polygon points="54,43 60,47 54,51" fill="var(--text-muted)"/><polygon points="106,43 112,47 106,51" fill="var(--text-muted)"/><rect x="12" y="33" width="28" height="28" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><rect x="61" y="33" width="28" height="28" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><rect x="111" y="33" width="28" height="28" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/></svg>',
+  'ポート':'<svg viewBox="0 0 150 90"><rect x="50" y="28" width="50" height="34" rx="6" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><polygon points="36,38 48,45 36,52" fill="#16a34a"/><polygon points="102,38 114,45 102,52" fill="#1d4ed8"/><text x="36" y="72" font-size="9" fill="#166534" text-anchor="middle" font-weight="700">入力</text><text x="110" y="72" font-size="9" fill="#1d4ed8" text-anchor="middle" font-weight="700">出力</text></svg>',
+  '接続（コネクション）':'<svg viewBox="0 0 150 90"><rect x="12" y="32" width="42" height="30" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><rect x="96" y="32" width="42" height="30" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><line x1="54" y1="47" x2="90" y2="47" stroke="var(--primary)" stroke-width="2.5"/><polygon points="90,42 98,47 90,52" fill="var(--primary)"/></svg>',
+  'データテーブル':'<svg viewBox="0 0 150 90"><rect x="30" y="20" width="90" height="50" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><rect x="30" y="20" width="90" height="14" fill="var(--primary-light)"/><g stroke="var(--border)"><line x1="60" y1="20" x2="60" y2="70"/><line x1="90" y1="20" x2="90" y2="70"/><line x1="30" y1="34" x2="120" y2="34"/><line x1="30" y1="48" x2="120" y2="48"/></g></svg>',
+  '列と行':'<svg viewBox="0 0 150 90"><rect x="25" y="20" width="100" height="52" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><rect x="58" y="20" width="33" height="52" fill="var(--primary-light)"/><rect x="25" y="46" width="100" height="13" fill="rgba(22,163,74,.18)"/><g stroke="var(--border)"><line x1="58" y1="20" x2="58" y2="72"/><line x1="91" y1="20" x2="91" y2="72"/><line x1="25" y1="33" x2="125" y2="33"/><line x1="25" y1="46" x2="125" y2="46"/><line x1="25" y1="59" x2="125" y2="59"/></g><text x="74" y="15" font-size="9" fill="var(--primary)" text-anchor="middle" font-weight="700">列</text><text x="135" y="55" font-size="9" fill="#166534" text-anchor="middle" font-weight="700">行</text></svg>',
+  '行ID':'<svg viewBox="0 0 150 90"><rect x="30" y="20" width="90" height="50" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><rect x="30" y="20" width="26" height="50" fill="var(--primary-light)"/><g stroke="var(--border)"><line x1="56" y1="20" x2="56" y2="70"/><line x1="88" y1="20" x2="88" y2="70"/><line x1="30" y1="37" x2="120" y2="37"/><line x1="30" y1="53" x2="120" y2="53"/></g><g font-size="8" fill="var(--primary)" text-anchor="middle" font-weight="700"><text x="43" y="32">Row0</text><text x="43" y="48">Row1</text><text x="43" y="65">Row2</text></g></svg>',
+  'データ型':'<svg viewBox="0 0 150 90"><g font-size="11" font-weight="700" text-anchor="middle"><rect x="16" y="24" width="54" height="22" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><text x="43" y="39" fill="var(--text)">Abc</text><rect x="80" y="24" width="54" height="22" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><text x="107" y="39" fill="var(--text)">123</text><rect x="16" y="52" width="54" height="22" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><text x="43" y="67" fill="var(--text)">1.5</text><rect x="80" y="52" width="54" height="22" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><g stroke="var(--text)" stroke-width="1.5" fill="none"><rect x="99" y="57" width="16" height="13" rx="1.5"/><line x1="99" y1="61" x2="115" y2="61"/><line x1="103" y1="55" x2="103" y2="58"/><line x1="111" y1="55" x2="111" y2="58"/></g></g></svg>',
+  '欠損値':'<svg viewBox="0 0 150 90"><rect x="30" y="20" width="90" height="50" rx="4" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><g stroke="var(--border)"><line x1="60" y1="20" x2="60" y2="70"/><line x1="90" y1="20" x2="90" y2="70"/><line x1="30" y1="45" x2="120" y2="45"/></g><rect x="60" y="45" width="30" height="25" fill="rgba(220,38,38,.14)"/><text x="75" y="64" font-size="16" fill="#dc2626" text-anchor="middle" font-weight="700">?</text></svg>',
+  '設定ダイアログ':'<svg viewBox="0 0 150 90"><rect x="32" y="16" width="86" height="60" rx="6" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><path d="M32 22 a6 6 0 0 1 6 -6 H112 a6 6 0 0 1 6 6 V32 H32 Z" fill="var(--primary-light)"/><g stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round"><line x1="42" y1="45" x2="76" y2="45"/><line x1="42" y1="55" x2="96" y2="55"/></g><rect x="42" y="62" width="24" height="9" rx="2" fill="var(--primary)"/></svg>',
+  '実行状態（信号機）':'<svg viewBox="0 0 150 90"><rect x="58" y="10" width="34" height="70" rx="11" fill="var(--surface)" stroke="var(--text-muted)" stroke-width="2"/><circle cx="75" cy="27" r="9" fill="#dc2626"/><circle cx="75" cy="45" r="9" fill="#eab308"/><circle cx="75" cy="63" r="9" fill="#16a34a"/></svg>',
+  'ノードリポジトリ':'<svg viewBox="0 0 150 90"><rect x="38" y="14" width="74" height="64" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/><g><circle cx="51" cy="30" r="4.5" fill="var(--primary)"/><circle cx="51" cy="46" r="4.5" fill="var(--primary)"/><circle cx="51" cy="62" r="4.5" fill="var(--primary)"/></g><g stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round"><line x1="63" y1="30" x2="100" y2="30"/><line x1="63" y1="46" x2="100" y2="46"/><line x1="63" y1="62" x2="100" y2="62"/></g></svg>',
+  'ワークスペース':'<svg viewBox="0 0 150 90"><path d="M40 28 H64 L71 37 H110 a5 5 0 0 1 5 5 V64 a5 5 0 0 1 -5 5 H40 a5 5 0 0 1 -5 -5 V33 a5 5 0 0 1 5 -5 Z" fill="var(--primary-light)" stroke="var(--primary)" stroke-width="2"/></svg>',
+  'フロー変数':'<svg viewBox="0 0 150 90"><rect x="46" y="14" width="58" height="18" rx="9" fill="var(--warn-light)" stroke="var(--warn)" stroke-width="1.5"/><text x="75" y="26" font-size="10" font-weight="700" fill="var(--warn)" text-anchor="middle">$ 変数 $</text><line x1="75" y1="32" x2="75" y2="42" stroke="var(--warn)" stroke-width="2"/><polygon points="70,40 75,46 80,40" fill="var(--warn)"/><rect x="48" y="46" width="54" height="30" rx="6" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/></svg>',
+  'ループ':'<svg viewBox="0 0 150 90"><rect x="60" y="36" width="30" height="20" rx="4" fill="var(--surface)" stroke="var(--primary)" stroke-width="1.5"/><svg x="51" y="21" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></svg>',
+  'メタノード':'<svg viewBox="0 0 150 90"><rect x="34" y="20" width="82" height="50" rx="6" fill="var(--bg)" stroke="var(--primary)" stroke-width="2" stroke-dasharray="5 4"/><rect x="44" y="34" width="20" height="14" rx="3" fill="var(--surface)" stroke="var(--text-muted)" stroke-width="1.5"/><rect x="70" y="34" width="20" height="14" rx="3" fill="var(--surface)" stroke="var(--text-muted)" stroke-width="1.5"/><rect x="57" y="52" width="20" height="12" rx="3" fill="var(--surface)" stroke="var(--text-muted)" stroke-width="1.5"/></svg>',
+  'コンポーネント':'<svg viewBox="0 0 150 90"><rect x="34" y="22" width="82" height="50" rx="6" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><rect x="44" y="38" width="20" height="14" rx="3" fill="var(--bg)" stroke="var(--text-muted)" stroke-width="1.5"/><rect x="70" y="38" width="20" height="14" rx="3" fill="var(--bg)" stroke="var(--text-muted)" stroke-width="1.5"/><circle cx="108" cy="28" r="10" fill="var(--primary)"/><g stroke="#fff" stroke-width="1.4" fill="none"><circle cx="108" cy="28" r="2.8"/><line x1="108" y1="21.5" x2="108" y2="34.5"/><line x1="101.5" y1="28" x2="114.5" y2="28"/><line x1="103.4" y1="23.4" x2="112.6" y2="32.6"/><line x1="112.6" y1="23.4" x2="103.4" y2="32.6"/></g></svg>',
+  'Learner と Predictor':'<svg viewBox="0 0 150 90"><rect x="8" y="32" width="52" height="28" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><text x="34" y="50" font-size="9" font-weight="700" text-anchor="middle" fill="var(--text)">Learner</text><rect x="90" y="32" width="52" height="28" rx="5" fill="var(--surface)" stroke="var(--primary)" stroke-width="2"/><text x="116" y="50" font-size="9" font-weight="700" text-anchor="middle" fill="var(--text)">Predictor</text><line x1="60" y1="46" x2="88" y2="46" stroke="var(--text-muted)" stroke-width="2"/><polygon points="82,41 90,46 82,51" fill="var(--text-muted)"/><text x="75" y="38" font-size="8" text-anchor="middle" fill="var(--text-muted)" font-weight="700">モデル</text></svg>',
+  'パーティショニング':'<svg viewBox="0 0 150 90"><rect x="20" y="20" width="52" height="52" rx="4" fill="rgba(22,163,74,.12)" stroke="#16a34a" stroke-width="2"/><text x="46" y="44" font-size="10" font-weight="700" text-anchor="middle" fill="#166534">学習用</text><text x="46" y="59" font-size="9" text-anchor="middle" fill="#166534">70%</text><rect x="82" y="20" width="48" height="52" rx="4" fill="rgba(29,78,216,.12)" stroke="#1d4ed8" stroke-width="2"/><text x="106" y="44" font-size="10" font-weight="700" text-anchor="middle" fill="#1d4ed8">テスト</text><text x="106" y="59" font-size="9" text-anchor="middle" fill="#1d4ed8">30%</text></svg>',
+  'KNIME Hub':'<svg viewBox="0 0 150 90"><path d="M52 56 a13 13 0 0 1 2 -26 a17 17 0 0 1 32 3 a11 11 0 0 1 1 23 Z" fill="var(--primary-light)" stroke="var(--primary)" stroke-width="2"/><line x1="73" y1="44" x2="73" y2="70" stroke="var(--primary)" stroke-width="2.5"/><polyline points="65,62 73,71 81,62" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+};
+
+function renderGlossary() {
+  const order = ['基本のしくみ','データの構造','操作・実行','便利な機能','機械学習・共有'];
+  const groups = [...new Set(GLOSSARY.map(g => g.group))]
+    .sort((a,b) => order.indexOf(a) - order.indexOf(b));
+  let html = '';
+  groups.forEach(gr => {
+    const items = GLOSSARY.filter(g => g.group === gr);
+    html += `<div class="cat-section-header"><span class="cat-section-title">${gr}</span><span class="cat-section-count">${items.length}語</span></div>`;
+    html += items.map(g => `
+      <div class="card" style="margin-bottom:.75rem">
+        <div class="term-card-inner">
+          <div class="term-text">
+            <div style="display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.35rem">
+              <span class="card-title" style="font-size:1.05rem">${g.term}</span>
+              <span style="font-size:.76rem;color:var(--text-muted);font-weight:600">${g.en}</span>
+            </div>
+            <p style="font-size:.875rem;${g.ex?'margin-bottom:.55rem':''}">${g.desc}</p>
+            ${g.ex ? `<div style="font-size:.82rem;color:var(--text-muted);background:var(--bg);border-left:3px solid var(--primary);padding:.4rem .7rem;border-radius:0 4px 4px 0;display:flex;gap:.4rem;align-items:flex-start"><svg width="13" height="13" style="flex-shrink:0;margin-top:3px" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.5.4.8 1 .9 1.6h6.2c.1-.6.4-1.2.9-1.6A7 7 0 0 0 12 2z"/></svg><span>${g.ex}</span></div>` : ''}
+          </div>
+          ${GLOSSARY_FIG[g.term] ? `<div class="term-fig">${GLOSSARY_FIG[g.term]}</div>` : ''}
+        </div>
+      </div>`).join('');
+  });
+  document.getElementById('glossary-list').innerHTML = html;
 }
 
 // ==================== ERRORS ====================
 function renderCommonErrors() {
   document.getElementById('common-errors').innerHTML = ERRORS.map(e => `
     <div style="padding:.75rem 0;border-bottom:1px solid var(--border)">
-      <div style="font-weight:600;font-size:.875rem;margin-bottom:.25rem;cursor:pointer;color:var(--primary)" onclick="prefillError('${e.keyword[0]}')">
-        🔴 ${e.title}
+      <div style="font-weight:600;font-size:.875rem;margin-bottom:.25rem;cursor:pointer;color:var(--primary);display:flex;gap:.4rem;align-items:center" onclick="prefillError('${e.keyword[0]}')">
+        <svg width="14" height="14" style="flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>${e.title}</span>
       </div>
       <div style="font-size:.8rem;color:var(--text-muted)">${e.cause}</div>
     </div>
@@ -2039,7 +2603,7 @@ function diagnoseError() {
   if (matched) {
     el.innerHTML = `
       <div class="error-result success" style="margin-top:1rem">
-        <h4>✅ 対処法が見つかりました：${matched.title}</h4>
+        <h4><svg width="16" height="16" style="vertical-align:-2px;margin-right:5px" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>対処法が見つかりました：${matched.title}</h4>
         <p style="font-size:.85rem;margin-bottom:.6rem;color:var(--text)"><strong>原因：</strong>${matched.cause}</p>
         <div style="font-size:.85rem;font-weight:600;margin-bottom:.35rem">解決策：</div>
         <ol style="font-size:.85rem;padding-left:1.25rem;line-height:1.8">${matched.solutions.map(s=>`<li>${s}</li>`).join('')}</ol>
@@ -2047,7 +2611,7 @@ function diagnoseError() {
   } else {
     el.innerHTML = `
       <div class="error-result" style="margin-top:1rem">
-        <h4>⚠️ 自動診断できませんでした</h4>
+        <h4><svg width="16" height="16" style="vertical-align:-2px;margin-right:5px" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>自動診断できませんでした</h4>
         <p style="font-size:.85rem;margin:.25rem 0 .75rem">入力されたエラーに対応する解決策がデータベースにありません。以下の方法をお試しください：</p>
         <ol style="font-size:.85rem;padding-left:1.25rem;line-height:1.8">
           <li>エラーが発生したノードを右クリック →「Open error log」で詳細なエラーメッセージを確認する</li>
